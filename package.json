@@ -1,0 +1,54 @@
+{
+  "name": "magnetarr",
+  "version": "0.1.0",
+  "private": true,
+
+  "devDependencies": {
+    "@types/chrome": "^0.0.263",
+    "nodemon": "^3.1.0"
+  },
+
+  "dependencies": {
+    "parcel": "^2.12.0",
+    "parcel-plugin-static-files-copy": "^2.6.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+
+  "targets": {
+    "background": {
+      "source": "src/background/background.js",
+      "distDir": "extension/src/background",
+      "publicUrl": "./"
+    },
+    "opt": {
+      "source": "src/opt/options.html",
+      "distDir": "extension/src/opt",
+      "publicUrl": "./"
+    },
+    "popup": {
+      "source": "src/popup/popup.html",
+      "distDir": "extension/src/popup",
+      "publicUrl": "./"
+    }
+  },
+
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build",
+    "dev": "nodemon --exec npm run build"
+  },
+
+  "nodemonConfig": {
+    "verbose": true,
+    "ignore": [
+      "extension/",
+      ".cache/"
+    ],
+    "delay": 500,
+    "watch": [
+      "src/"
+    ],
+    "ext": "js,ts,tsx,css,json,html,png"
+  }
+}
