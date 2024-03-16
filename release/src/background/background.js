@@ -1,2 +1,2 @@
-
+(()=>{class t{static get name(){return""}constructor(){}urlMatch(t){return!1}}class e extends t{static get name(){return"Imdb"}urlMatch(t){return!!t.match(/\/\/www\.imdb.com\/.+\/tt\d{7,8}\//)}}let n={};function r(t){chrome.tabs.query({active:!0,currentWindow:!0},function(e){e[0]&&function(t){for(let[e,r]of Object.entries(n))if(r.urlMatch(t))return r;return null}(e[0].url)?chrome.action.enable(t.tabId):chrome.action.disable(t.tabId)})}n[e.name]=new e,chrome.tabs.onActivated.addListener(r),chrome.webNavigation.onCommitted.addListener(r)})();
 //# sourceMappingURL=background.js.map

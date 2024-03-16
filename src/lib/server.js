@@ -37,7 +37,6 @@
 
 export class Server {
 	constructor (name, default_port=0) {
-		var self = this;
 		this.name = name;
 		this.default_port = default_port;
         this.setConfig();

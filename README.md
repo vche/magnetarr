@@ -19,6 +19,13 @@ The extension is built in the `release` folder, which is the folder to load as u
 npm run build
 ```
 
+### Build a release
+This will clean all older artefacts before building
+
+```bash
+npm run release
+```
+
 ### Start development build
 
 Start a watch daemon that will rebuild the extension upon changes in the source folder.
@@ -33,5 +40,6 @@ npm run dev
 - [Radarr](https://github.com/Radarr/Radarr)
 - [Sonarr](https://github.com/Sonarr/Sonarr)
 - [Parcel](https://parceljs.org)
+- [Chrome extension API](https://developer.chrome.com/docs/extensions/reference/api/)
 
 Bug Reports/Feature Requests https://github.com/vche/magnetarr
