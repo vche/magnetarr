@@ -25,7 +25,10 @@
       "128": "img/magnetarr/magnetarr-128.png"
       },
     "default_popup": "src/popup/popup.html",
-    "default_title": "Add to Radarr"
+    "default_title": "Add to Radarr",
+    "default_width": 400,
+    "default_height": 600
+
   },
 
   "options_ui": {
@@ -40,6 +43,7 @@
   "permissions": [
     "activeTab",
     "tabs",
+    "storage",
     "webNavigation"
   ],
 
