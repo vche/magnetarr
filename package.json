@@ -9,6 +9,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.13",
     "@mui/material": "^5.15.13",
     "parcel": "^2.12.0",
     "parcel-plugin-static-files-copy": "^2.6.0",
@@ -34,9 +35,10 @@
   },
   "scripts": {
     "start": "parcel",
-    "build": "npm run clean; parcel build",
+    "build": "parcel build",
     "dev": "nodemon --exec npm run build",
-    "clean": "rm -r release/src/*"
+    "clean": "rm -r release/src/*; rm -r .parcel-cache",
+    "release": "npm run clean; npm run build"
   },
   "nodemonConfig": {
     "verbose": true,

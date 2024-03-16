@@ -73,6 +73,31 @@ export class Server {
         }
     }
 
+    // Load the config from the extension storage
+    loadConfig(callback) {
+        const wanted = {}
+        wanted[this.name] = this.getConfig()
+        chrome.storage.sync.get(
+          wanted,
+            (items) => {
+              this.setConfig(items[this.name]);
+              console.log(`Loaded ${this.name} config: ${JSON.stringify(this.getConfig())}`);
+              callback(items);
+            }
+        );
+    }
+
+    // Save config to the extension storage
+    saveConfig(callback) {
+        const wanted = {}
+        wanted[this.name] = this.getConfig()
+        console.log(`Saved ${this.name} config: ${JSON.stringify(this.getConfig())}`);
+        chrome.storage.sync.set(
+            wanted, 
+            () => { callback(); }
+        );
+    }
+
     // Build the server url
     constructBaseUrl() {
 		var regex = new RegExp("https{0,1}:\/\/");
@@ -87,60 +112,36 @@ export class Server {
 		}
 	}
 
-    // Send a get request to the server
-	get(endpoint, params) {
-		var self = this;
-		return new Promise(function(resolve, reject) {
-            console.log("get pipo")
-			var http = new XMLHttpRequest();
-			var url = self.constructBaseUrl() + endpoint + "?" + params;
+    async get(endpoint, data=null, params=null) {
+        try {
+            // Build URL
+			var url = this.constructBaseUrl() + endpoint;
+            if (params) {
+			    url = url + "?" + params;
+            }
 
-			http.open("GET", url, true);
-			http.timeout = 5000;
-			if (self.auth === "true") http.setRequestHeader("Authorization", "Basic " + btoa(self.user + ":" + self.password));
-			http.setRequestHeader("X-Api-Key", self.apikey);
+            // Build headers
+            const headers = {"X-Api-Key": this.apikey};
+			if (this.user && this.password) {
+                headers["Authorization"] = "Basic " + btoa(this.user + ":" + this.password);
+            }
 
-			http.onload = function() {
-				if (http.status === 200) {
-					var results = {
-						"text": JSON.parse(http.responseText),
-						"status": http.status
-					};
-					self.isEnabled = true;
-					resolve(results);
-				} else {
-					switch (http.status) {
-						case 401:
-						self.isEnabled = false;
-						reject(self.name + " Unauthorised! Please check your API key or server authentication.");
-						break;
-						case 500:
-						self.isEnabled = false;
-						reject("Failed to find movie or series! Please check you are on a valid IMDB page.");
-						break;
-						default:
-						self.isEnabled = false;
-						reject(Error("(" + http.status + ")" + http.statusText));
-					}
-				}
-			};
+            // Build data
+            var body = data;
+            if ((data != null) && (typeof data !== "string")) {
+                body = JSON.stringify(data);
+            }
+        
+            const res = await fetch(url, { method: "get", body: body, headers: headers });
 
-			http.ontimeout = function(error) {
-				self.isEnabled = false;
-				reject(Error(self.name + " server took too long to respond. Please check configuration."));
-			};
+            if (res.status >= 400) throw new Error(`${res.status} (${res.statusText})`)
+            data = await res.json();
+            console.debug(`Request to ${url}: ${res.status} ${JSON.stringify(data)}`); 
 
-			http.onerror = function() {
-				if (self.name === undefined) {
-					self.isEnabled = false;
-					reject(Error(self.name + " could not resolve host. Please check your configuration and network settings."));
-				} else {
-					self.isEnabled = false;
-					reject(Error("Could not resolve " + self.name + " host. Please check your configuration and network settings."));
-				}
-			};
-
-			http.send();
-		});
-	}
+            return data;
+        } catch (error) {
+            console.log(`Error querying endpoint ${url}: ${error}`);
+            throw error;
+        }
+    }
 }

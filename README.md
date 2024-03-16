@@ -6,9 +6,6 @@ Browser extension for adding movies to [Radarr](https://radarr.video) or Series'
 - TODO: [Safari](https://addons.mozilla.org/firefox/addon/ffpulsarr)) 
 
 ## TODO
-- port server.get()
-- add server validation
-- write status/ error after validation and save
 - Add other websites: Rotten tomatoes, TVDB
 - Multi browser support (Safari/ios)
 

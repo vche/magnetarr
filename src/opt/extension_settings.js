@@ -12,6 +12,19 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import TextField from '@mui/material/TextField';
 import { Server } from '../lib/server';
+import './extension_settings.css';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 function CustomTabPanel({ children, selected, name, ...other }) {
   return (
@@ -44,22 +57,22 @@ function CliArrSettings( { name, default_port="0"} ) {
   const [invalidHost, setInvalidHost] = React.useState("")
   const [invalidPort, setInvalidPort] = React.useState("")
   const [invalidKey, setInvalidKey] = React.useState("")
+  const [errorText, setErrorText] = React.useState("")
+  const [successText, setSuccessText] = React.useState("")
 
   // Load config from settings for this server
   React.useEffect(() => {
     if (!server) {
-      const wanted = {}
       const new_server = new Server(name, default_port);
-      wanted[new_server.name] = new_server.getConfig()
-      chrome.storage.sync.get(
-        wanted,
-          (items) => {
-            new_server.setConfig(items[new_server.name]);
-            setServer(new_server);
-          }
-      );
+      new_server.loadConfig((items) => { setServer(new_server);});
     }
   }, [server])
+
+  // Display a notification string
+  function notify(setter, message) {
+    setter(message)
+    setTimeout(() => { setter(""); }, 2000);
+  }
 
   // Validate the form, test config, and store the update
   function handleSubmit(event) {
@@ -88,24 +101,20 @@ function CliArrSettings( { name, default_port="0"} ) {
         server.user = event.target.id_user.value;
         server.password = event.target.id_pass.value;
         
-        // server.get("/api/v3/system/status")
-        // server.enabled
-
-        const wanted = {}
-        wanted[server.name] = server.getConfig();
-
-        chrome.storage.sync.set(
-          wanted,
-          () => {
-            // Update status to let user know options were saved.
-            console.log("trop fort " + server.name + ": ")
-            // const status = document.getElementById('status');
-            // status.textContent = 'Options saved.';
-            // setTimeout(() => {
-            //   status.textContent = '';
-            // }, 750);
+        server.get("/api/v3/system/status").then(
+          (data) => {
+            console.log(`Detected ${data.appName} ${data.version}`);
+            server.enabled = true;
+            notify(setSuccessText, `${server.name} configuration verified, server enabled`);
           }
-        );        
+        ).catch(
+          (error) => { 
+            server.enabled = false;
+            notify(setErrorText, `${server.name} configuration failed [${error}], server disabled`);
+          }
+        ).finally(
+          () => { server.saveConfig(() => { console.log(`${server.name} configuration saved.`); }); }
+        );
       }
    };
 
@@ -113,6 +122,11 @@ function CliArrSettings( { name, default_port="0"} ) {
       <div>
           {server && (
             <form onSubmit={handleSubmit}>
+                {server.enabled?(
+                  <Chip icon={<CheckCircleOutlineIcon />}  label="Enabled" color="success" variant="outlined" />
+                ):(
+                  <Chip icon={<HighlightOffIcon />}  label="Disabled" color="error" variant="outlined" />
+                )}
                 <TextField id="id_host"
                     label="Host"
                     variant="outlined"
@@ -122,6 +136,7 @@ function CliArrSettings( { name, default_port="0"} ) {
                     error={invalidHost?true:false}
                     helperText={invalidHost}
                     defaultValue={server.host}
+                    size="small"
                 />
                 <TextField id="id_port" 
                     label="Port"
@@ -132,6 +147,7 @@ function CliArrSettings( { name, default_port="0"} ) {
                     error={invalidPort?true:false}
                     helperText={invalidPort}
                     defaultValue={server.port}
+                    size="small"
                 />
                 <TextField id="id_apikey" 
                     label="API key"
@@ -142,31 +158,43 @@ function CliArrSettings( { name, default_port="0"} ) {
                     error={invalidKey?true:false}
                     helperText={invalidKey}
                     defaultValue={server.apikey}
+                    size="small"
                 />
 
-                <TextField id="id_user" 
-                    label="User"
-                    variant="outlined"
-                    margin="normal" 
-                    fullWidth
-                    autoComplete="username"
-                    helperText="Leave empty if no authentication"
-                    defaultValue={server.user}
-                />
-                <TextField id="id_pass" 
-                    label="Password"
-                    variant="outlined"
-                    margin="normal" 
-                    type="password"
-                    fullWidth
-                    autoComplete="current-password"
-                    helperText="Leave empty if no authentication"
-                    defaultValue={server.password}
-                />
+                <Typography variant="caption" display="block" gutterBottom>
+                  Leave empty if no authentication
+                </Typography>
+                <Stack direction="row" spacing={1} sx={{ my: '10px' }}>
+                  <TextField id="id_user" 
+                      label="User"
+                      variant="outlined"
+                      margin="normal" 
+                      fullWidth
+                      autoComplete="username"
+                      defaultValue={server.user}
+                      size="small"
+                  />
+                  <TextField id="id_pass" 
+                      label="Password"
+                      variant="outlined"
+                      margin="normal" 
+                      type="password"
+                      fullWidth
+                      autoComplete="current-password"
+                      defaultValue={server.password}
+                      size="small"
+                  />
+                </Stack>
 
                 <Button type="submit" >
                     Apply
                 </Button>
+                {errorText && (<Typography variant="caption" display="block" gutterBottom className="errorText">
+                  {errorText}
+                </Typography>)}
+                {successText && (<Typography variant="caption" display="block" gutterBottom className="successText">
+                  {successText}
+                </Typography>)}
             </form>
         )}
       </div>
@@ -181,19 +209,22 @@ export default function ExtensionSettings() {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange}>
-          <Tab label="Sonarr" {...tabProps("sonarr")} />
-          <Tab label="Radarr" {...tabProps("radarr")} />
-        </Tabs>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <Box sx={{ width: '100%' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={value} onChange={handleChange}>
+            <Tab label="Sonarr" {...tabProps("sonarr")} />
+            <Tab label="Radarr" {...tabProps("radarr")} />
+          </Tabs>
+        </Box>
+        <CustomTabPanel selected={value} name="sonarr">
+          <CliArrSettings name="sonarr" default_port="8989"/>
+        </CustomTabPanel>
+        <CustomTabPanel selected={value} name="radarr">
+          <CliArrSettings name="radarr" default_port="7878"/>
+        </CustomTabPanel>
       </Box>
-      <CustomTabPanel selected={value} name="sonarr">
-        <CliArrSettings name="sonarr" default_port="8989"/>
-      </CustomTabPanel>
-      <CustomTabPanel selected={value} name="radarr">
-        <CliArrSettings name="radarr" default_port="7878"/>
-      </CustomTabPanel>
-    </Box>
+    </ThemeProvider>
   );
 }
