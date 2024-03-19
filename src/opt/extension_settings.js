@@ -6,12 +6,8 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
 import TextField from '@mui/material/TextField';
-import { Server } from '../lib/server';
+import { ItemTypes, getServerForType } from '../lib/server';
 import './extension_settings.css';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
@@ -52,7 +48,7 @@ function tabProps(name) {
   };
 }
 
-function CliArrSettings( { name, default_port="0"} ) {
+function CliArrSettings( { itemtype } ) {
   const [server, setServer] = React.useState(null)
   const [invalidHost, setInvalidHost] = React.useState("")
   const [invalidPort, setInvalidPort] = React.useState("")
@@ -63,8 +59,10 @@ function CliArrSettings( { name, default_port="0"} ) {
   // Load config from settings for this server
   React.useEffect(() => {
     if (!server) {
-      const new_server = new Server(name, default_port);
-      new_server.loadConfig((items) => { setServer(new_server);});
+      console.log(itemtype)
+      const new_server = getServerForType(itemtype);
+      if (new_server) new_server.loadConfig((items) => { setServer(new_server);});
+      // if (new_server) new_server.loadConfig().then((items) => { setServer(new_server);});
     }
   }, [server])
 
@@ -93,7 +91,7 @@ function CliArrSettings( { name, default_port="0"} ) {
       }
       else {setInvalidKey(""); }
 
-      if (validated){
+      if (validated && server){
         // Set the validated data
         server.host = event.target.id_host.value;
         server.port = event.target.id_port.value;
@@ -219,10 +217,10 @@ export default function ExtensionSettings() {
           </Tabs>
         </Box>
         <CustomTabPanel selected={value} name="sonarr">
-          <CliArrSettings name="sonarr" default_port="8989"/>
+          <CliArrSettings itemtype={ItemTypes.Serie} />
         </CustomTabPanel>
         <CustomTabPanel selected={value} name="radarr">
-          <CliArrSettings name="radarr" default_port="7878"/>
+          <CliArrSettings itemtype={ItemTypes.Movie} />
         </CustomTabPanel>
       </Box>
     </ThemeProvider>

@@ -26,8 +26,8 @@
       },
     "default_popup": "src/popup/popup.html",
     "default_title": "Add to Radarr",
-    "default_width": 400,
-    "default_height": 600
+    "default_width": 800,
+    "default_height": 1200
 
   },
 

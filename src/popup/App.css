@@ -1,3 +1,29 @@
-.App {
-  text-align: center;
+#card-header {
+  padding-right: 15px;
+}
+
+#App {
+  /* text-align: center; */
+  width: 400px;
+}
+
+.truncText {
+  overflow: hidden;
+  /* white-space: nowrap; */
+  text-align: left;
+  text-overflow: ellipsis;
+}
+
+.truncText:hover{
+  overflow: visible;
+  white-space: normal;
+  height:auto;
+}
+
+.errorText {
+  color: red;
+}
+
+.successText {
+  color: green;
 }
