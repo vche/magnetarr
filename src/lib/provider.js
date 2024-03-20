@@ -17,7 +17,11 @@ export class Imdb extends Provider {
     constructor (name) {
         super(name);
         this.idRegex = new RegExp("\/tt\\d{1,8}");
-        this.xmlparser = new DOMParser();
+
+        // DOMParser is not available in service worker (but we don't need it). so catch the error
+        this.xmlparser = null;
+        try { this.xmlparser = new DOMParser(); }
+        catch (error) {console.log("Service worker, ignoring DOMParser unavailability"); }
 	}
 
     _imdbIdFromUrl(url) {
@@ -30,6 +34,7 @@ export class Imdb extends Provider {
     async tvdbidFromImdbid(imdbid) {
         const url = "http://thetvdb.com/api/GetSeriesByRemoteID.php?imdbid=" + imdbid;
         const headers = {"Content-Type": "application/xml"};
+        if (!this.xmlparser) return null;
         try {
             // Try to get the serie id from allocine
             const res = await fetch(url, { method: "get", headers: headers });
@@ -59,7 +64,7 @@ export class Imdb extends Provider {
         if (!imdbid) { return new Item() }
 
         const tvdbid = await this.tvdbidFromImdbid(imdbid)
-        console.debug("imdb id " + imdbid + " // tvdb id " + tvdbid);
+        // console.log("imdb id " + imdbid + " // tvdb id " + tvdbid);
 
         // If we have a tvid, that's a serie. otherwise a movie
         if (tvdbid) { return new Item(tvdbid, ItemTypes.Serie) }

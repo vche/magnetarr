@@ -125,7 +125,10 @@ export class Server {
 		}
 	}
 
-    async get(endpoint, data=null, params=null) {
+    async get(endpoint, data=null, params=null) { return await this.request("get", endpoint, data, params); }
+    async post(endpoint, data=null, params=null) { return await this.request("post", endpoint, data, params); }
+
+    async request(method, endpoint, data=null, params=null) {
         try {
             // Build URL
 			var url = this.getUrl() + endpoint;
@@ -134,7 +137,7 @@ export class Server {
             }
 
             // Build headers
-            const headers = {"X-Api-Key": this.apikey};
+            const headers = {"X-Api-Key": this.apikey, 'Content-Type': 'application/json'};
 			if (this.user && this.password) {
                 headers["Authorization"] = "Basic " + btoa(this.user + ":" + this.password);
             }
@@ -145,11 +148,12 @@ export class Server {
                 body = JSON.stringify(data);
             }
         
-            const res = await fetch(url, { method: "get", body: body, headers: headers });
+            // console.log("Request " + method + " headers: " + JSON.stringify(headers) + " body: " + body);
+            const res = await fetch(url, { method: method, body: body, headers: headers });
 
             if (res.status >= 400) throw new Error(`${res.status} (${res.statusText})`)
             data = await res.json();
-            console.debug(`Request to ${url}: ${res.status} ${JSON.stringify(data)}`); 
+            // console.log(`Request to ${url}: ${res.status}`); console.log(data);
 
             return data;
         } catch (error) {
@@ -157,8 +161,6 @@ export class Server {
             throw error;
         }
     }
-
-    // post()
 
     getLogo(size="48") {
         return `/img/${this.name}/${this.name}-${size}.png`;
@@ -195,7 +197,6 @@ export class Server {
 
     async getProfiles() {
         const result = await this.get(this.getProfileUrlPath());
-        // for (let i = 0; i < result.length; i++) { console.log("prof: " + result[i].id + " // " + result[i].name); }
         return result;
     }
 
@@ -203,60 +204,25 @@ export class Server {
         const result = await this.get(this.getFolderUrlPath());
         const folders = []
         for (let i = 0; i < result.length; i++) { 
-            // console.log("prof: " + result[i].id + " // " + result[i].path);
             folders.push({"name": result[i].path, "id": result[i].path})
         }
         return folders;
     }
 
-    async getItemList() { return []; }
-    async lookupItem(item) { return {}; }
     getAuxInfoValues() { return []; }
-    getItemUrl(item) { return this.getUrl() + "/" + item.itemslug }
+    getItemUrl(item) { return this.getUrl() + this.getItemPath(item) }
     checkItemId(itemid, element) { return False; }
+    getItemPath(item={}) { return "/item" + ((item) ? `/${item.itemslug}` : ""); }
     getProfileUrlPath() { return "/profiles";}
     getFolderUrlPath() { return "/folders";}
-}
-
-export class Radarr extends Server {
-	constructor () {
-        super("radarr", 7878)
-    }
-    
-    async getItemList() { return await this.get("/api/v3/movie"); }
-    async lookupItem(item) { return await this.get("/api/v3/movie/lookup", null, "term=imdb%3A%20" + item.itemid); }
-    checkItemId(itemid, element) {  return (itemid === element.imdbId); }
-    getItemUrl(item) { return this.getUrl() + "/movies/" + item.itemslug }
-    getProfileUrlPath() { return "/api/v3/qualityProfile";}
-    getFolderUrlPath() { return "/api/v3/rootfolder";}
-    getAuxInfoValues() {
-        return [
-            {name: "Announced", id: "announced"},
-            {name: "In Cinemas", id: "inCinemas"},
-            {name: "Physical/Web", id: "released"},
-            {name: "Pre DB/Web", id: "preDB"}
-          ];    
-    }
-}
-
-export class Sonarr extends Server {
-	constructor () {
-        super("sonarr", 8989)
+    buildItemDict(item) { return {}; }
+    async getItemList() { return await this.get(this.getItemPath()); }
+    async lookupItem(item) { return {}; }
+    async addItem(item) {
+        const newItem = this.buildItemDict(item);
+        await this.post(this.getItemPath(), newItem);
     }
 
-    async getItemList() { return await this.get("/api/v3/series"); }
-    async lookupItem(item) { return await this.get("/api/v3/series/lookup", null, "term=tvdb%3A%20" + item.itemid); }
-    checkItemId(itemid, element) { return ((element.tvdbId) && (itemid === element.tvdbId.toString())); }
-    getItemUrl(item) { return this.getUrl() + "/series/" + item.itemslug }
-    getProfileUrlPath() { return "/api/v3/qualityProfile";}
-    getFolderUrlPath() { return "/api/v3/rootfolder";}
-    getAuxInfoValues() {
-        return [{name: "Standard", id: "standard"}, {name: "Daily", id: "daily"}, {name: "Anime", id: "anime"}];
-    }
-}
-
-
-// addItem()
     // tbd
     // radarr.addMovie(
     //     media.movie.text[0],
@@ -340,6 +306,80 @@ export class Sonarr extends Server {
 //         pulsarr.info(error);
 //     });
 // }
+
+}
+
+export class Radarr extends Server {
+	constructor () {
+        super("radarr", 7878)
+    }
+    
+    getItemUrl(item) { return this.getUrl() + "/movie" + ((item) ? `/${item.itemslug}` : "") }
+    checkItemId(itemid, element) {  return (itemid === element.imdbId); }
+    getItemPath(item=null) { return "/api/v3/movie" + ((item) ? `/${item.itemslug}` : ""); }
+    getProfileUrlPath() { return "/api/v3/qualityProfile";}
+    getFolderUrlPath() { return "/api/v3/rootfolder";}
+    getAuxInfoValues() {
+        return [
+            {name: "Announced", id: "announced"},
+            {name: "In Cinemas", id: "inCinemas"},
+            {name: "Physical/Web", id: "released"},
+            {name: "Pre DB/Web", id: "preDB"}
+          ];    
+    }
+    buildItemDict(item) {
+        return {
+            "title": item.properties.title,
+            "year": item.properties.year,
+            "qualityProfileId": parseInt(item.server.profileid),
+            "titleSlug": item.properties.titleSlug,
+            "images": item.properties.images,
+            "tmdbid": item.properties.tmdbId,
+            "imdbId": item.properties.imdbid,
+            "rootFolderPath": item.server.folder,
+            "monitored": item.server.monitored,
+            "minimumAvailability": item.server.auxinfo,
+            "addOptions": {
+                "searchForMovie": true
+            }
+        };
+    }
+    async lookupItem(item) {return await this.get(this.getItemPath() + "/lookup", null, "term=imdb%3A%20" + item.itemid);}
+}
+
+export class Sonarr extends Server {
+	constructor () {
+        super("sonarr", 8989)
+    }
+
+    getItemUrl(item) { return this.getUrl() + "/series" + ((item) ? `/${item.itemslug}` : "") }
+    checkItemId(itemid, element) { return ((element.tvdbId) && (itemid === element.tvdbId.toString())); }
+    getItemPath(item) { return "/api/v3/series" + ((item) ? `/${item.itemslug}` : ""); }
+    getProfileUrlPath() { return "/api/v3/qualityProfile";}
+    getFolderUrlPath() { return "/api/v3/rootfolder";}
+    getAuxInfoValues() {
+        return [{name: "Standard", id: "standard"}, {name: "Daily", id: "daily"}, {name: "Anime", id: "anime"}];
+    }
+    buildItemDict(item) {
+        return {
+            "title": item.properties.title,
+            "year": item.properties.year,
+            "qualityProfileId": parseInt(item.server.profileid),
+            "seriesType": item.server.auxinfo,
+            "titleSlug": item.properties.titleSlug,
+            "images": item.properties.images,
+            "tvdbId": item.properties.tvdbId,
+            "rootFolderPath": item.server.folder,
+            "monitored": item.server.monitored,
+            "addOptions": {
+                "ignoreEpisodesWithFiles": false,
+                "ignoreEpisodesWithoutFiles": false,
+                "searchForMissingEpisodes": true
+            }
+        };
+    }
+    async lookupItem(item) { return await this.get(this.getItemPath() + "/lookup", null, "term=tvdb%3A%20" + item.itemid); }
+}
 
 
 // lookupItemByTitleYear(title, year)

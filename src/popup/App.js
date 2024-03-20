@@ -34,8 +34,6 @@ const borderStyles = {
   borderRadius: '16px', 
   boxShadow: 2, 
   border: 1, 
-  // borderBottom: 1,
-  // borderRight: 1,
   borderColor: 'grey.500',
   bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : '#fff'),
   m: 2,
@@ -73,74 +71,102 @@ function OptionMenu({tip, name, label, values, defaultval}) {
   )
 }
 
-function ItemAdd({item}) {
+function ItemAdd({item, seterror}) {
+  const [loading, setLoading] = React.useState(false)
   function handleSubmit(event) {
     event.preventDefault();
     event.stopPropagation();
 
     const formData = new FormData(event.target);
-    item.server.profileid = formData.get("sel_quality")
-    item.server.auxinfo = formData.get("sel_auxinfo")
-    item.server.folder = formData.get("sel_folder")
+    item.server.profileid = formData.get("sel_quality");
+    item.server.auxinfo = formData.get("sel_auxinfo");
+    item.server.folder = formData.get("sel_folder");
+    item.server.monitored = (formData.get("switch_monitored") == "on")?true:false;
     item.server.saveConfig().then(() => {console.log("server config updated")});
+
+    setLoading(true);
+    item.server.addItem(item).then(() => {
+      if (seterror) seterror(`${item.itemtype} added successfully`);
+      // setTimeout(function() { window.close(); }, 200);
+  }).catch((error) => {
+      if (seterror) seterror(`Error adding ${item.itemtype}: ${error}`, true);
+      console.log("Error adding item:"); console.log(error);
+    }).finally(() => {
+      setLoading(false);
+    });
   }
 
   return (
     <Box sx={{ ...borderStyles, display: 'flex', flexDirection: 'column', mt: 0, mb: 2}}>
-      <form onSubmit={handleSubmit}>
-      <FormGroup>
-        {(item.itemtype == ItemTypes.Movie)&&(
-          <OptionMenu 
+      {loading?(
+        <Box sx={{ display: 'flex', justifyContent: 'center', p:2}}>
+          <CircularProgress />
+        </Box>        
+      ):(
+        <form onSubmit={handleSubmit}>
+        <FormGroup>
+          {(item.itemtype == ItemTypes.Movie)&&(
+            <OptionMenu 
+                name = "sel_auxinfo"
+                tip = "Minimum availability before downloading"
+                label = "Minimum availability"
+                values = {item.server.getAuxInfoValues()}
+                defaultval = {item.server.auxinfo}
+            />
+          )}
+
+          {(item.itemtype == ItemTypes.Serie)&&(
+            <OptionMenu 
               name = "sel_auxinfo"
-              tip = "Minimum availability before downloading"
-              label = "Minimum availability"
+              tip = "Serie type"
+              label = "Serie type"
               values = {item.server.getAuxInfoValues()}
               defaultval = {item.server.auxinfo}
-          />
-        )}
+            />
+          )}
 
-        {(item.itemtype == ItemTypes.Serie)&&(
           <OptionMenu 
-            name = "sel_auxinfo"
-            tip = "Serie type"
-            label = "Serie type"
-            values = {item.server.getAuxInfoValues()}
-            defaultval = {item.server.auxinfo}
+            name = "sel_quality"
+            tip = {`Required quality profile for this ${item.itemtype}`}
+            label = "Quality profile"
+            values = {item.server.profiles}
+            defaultval = {item.server.profileid}
           />
-        )}
 
-        <OptionMenu 
-          name = "sel_quality"
-          tip = {`Required quality profile for this ${item.itemtype}`}
-          label = "Quality profile"
-          values = {item.server.profiles}
-          defaultval = {item.server.profileid}
-        />
+          <OptionMenu 
+            name = "sel_folder"
+            tip = {`Folder where to import the ${item.itemtype}`}
+            label = "Import folder"
+            values = {item.server.folders}
+            defaultval = {item.server.folder}
+          />
+        </FormGroup>
 
-        <OptionMenu 
-          name = "sel_folder"
-          tip = {`Folder where to import the ${item.itemtype}`}
-          label = "Import folder"
-          values = {item.server.folders}
-          defaultval = {item.server.folder}
-        />
-      </FormGroup>
-
-      <Box sx={{display: 'flex', flexDirection: 'row', mt: 0, justifyContent: 'space-between', m: 1, mt: 0, pb: 0 }}>
-        <Tooltip title="Start monitoring when added">
-          <FormControlLabel control={<Switch defaultChecked />} label="Monitored" />
-        </Tooltip>
-        <Tooltip title={`Add the ${item.itemtype}`}>
-          <Button type="submit" variant="outlined" startIcon={<SearchIcon />}>Add</Button>
-          {/* <IconButton><SearchIcon /> </IconButton>           */}
-        </Tooltip>
-      </Box>
-      </form>
+        <Box sx={{display: 'flex', flexDirection: 'row', mt: 0, justifyContent: 'space-between', m: 1, mt: 0, pb: 0 }}>
+          <Tooltip title="Start monitoring when added">
+            <FormControlLabel name = "switch_monitored" control={<Switch defaultChecked />} label="Monitored" />
+          </Tooltip>
+          <Tooltip title={`Add the ${item.itemtype}`}>
+            <Button type="submit" variant="outlined" startIcon={<SearchIcon />}>Add</Button>
+            {/* <IconButton><SearchIcon /> </IconButton>           */}
+          </Tooltip>
+        </Box>
+        </form>
+      )}
     </Box>    
   )
 }
 
 function ItemContent({item}) {
+  const [shortOverview, setShortOverview] = React.useState(true)
+
+  const char = 85;
+  var shortcontent = "";
+  if (item && (item.properties.overview.length > char)) {
+    const last = item.properties.overview.substr(0, char).lastIndexOf(' ');
+    shortcontent = item.properties.overview.substr(0, last) + ' (...)';
+  }
+
   return (
     <Box sx={{ ...borderStyles, display: 'flex', flexDirection: 'row'}}>
       <CardMedia
@@ -156,11 +182,12 @@ function ItemContent({item}) {
         <Typography variant="subtitle1" color="text.secondary" component="div" sx={{ display: 'flex'}}>
         {`(${item.properties.year})`}
         </Typography>
-        <Typography className='truncText' variant="caption" color="text.secondary" component="div" sx={{ 
-          display: 'flex',
-          height: 55,
-          }} >
-        {`(${item.properties.overview})`}
+        <Typography variant="caption" color="text.secondary" component="div" 
+          className={shortOverview?'truncText':'fullText'}
+          onClick={() => {setShortOverview(!shortOverview)}}
+          sx={{ display: 'flex' }}
+        >
+          {shortOverview ? `${shortcontent}` : `${item.properties.overview}` }
         </Typography>
       </CardContent>
     </Box>
@@ -201,7 +228,7 @@ export default function App() {
       const server = getServerForType(item.itemtype);
       item.provider = provider;
       item.server = server;
-      console.debug(`Found: ${item.itemid}, type: ${item.itemtype}, server: ${server.name}`);
+      // console.log(`Found: ${item.itemid}, type: ${item.itemtype}, server: ${server.name}`);
 
       // Load config, and check if ther server is enabled before notifying the ui
       await server.loadConfig(true, true);
@@ -211,7 +238,7 @@ export default function App() {
       await server.getItemInfo(item);
       return item;
     }
-    throw Error("No provider found matching url " + targetUrl);
+    console.log("No provider found matching url, nothing to do " + targetUrl);
   }
 
   React.useEffect(() => {
@@ -221,10 +248,18 @@ export default function App() {
         console.log("Item info: "); console.log(item);
       }).catch((error) => {
         console.error("Couldn't get item info: " + error);
-        setErrorText("Couldn't extract item information: " + error);
+        setStatus("Couldn't extract item information: " + error, true);
       });
     }
   }, [item])
+
+  function setStatus(text, error=false) {
+    setErrorText({text: text, class: error?"errorText":"successText"});
+    setTimeout(function() {
+      setErrorText("")
+    }, 1500);
+
+  }
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -240,8 +275,8 @@ export default function App() {
           {/* Status text */}
           {errorText && (
               <Box sx={{ display: 'flex', pl: 1}}>
-                <Typography variant="caption" display="block" gutterBottom className="errorText">
-                  {errorText}
+                <Typography variant="caption" display="block" gutterBottom className={errorText.class}>
+                  {errorText.text}
                 </Typography>
             </Box>)}
             
@@ -256,7 +291,7 @@ export default function App() {
               </Tooltip>
             </Box>
           ):(
-            <ItemAdd item={item} />
+            <ItemAdd item={item} seterror={setStatus} />
           )}
         </Card>
       )}

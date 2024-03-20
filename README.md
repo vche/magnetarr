@@ -2,15 +2,11 @@
 
 Browser extension for adding movies to [Radarr](https://radarr.video) or Series' to [Sonarr](https://sonarr.tv) while browsing IMDB, inspired by [Pulsarr](https://github.com/roboticsound/Pulsarr), completely rewritten in react.
 - [Chrome](https://chrome.google.com/webstore/detail/pulsarr/dcildkalkckjjdfpgagmnbbfooogopkd)
-- TODO: [Firefox](https://addons.mozilla.org/firefox/addon/ffpulsarr)) 
-- TODO: [Safari](https://addons.mozilla.org/firefox/addon/ffpulsarr)) 
 
 ## TODO
-- Implement the Add in server
-- Call add from the submit in app
-- Do something better for the synopsus (... + clik)
-- Add other websites: Rotten tomatoes, TVDB
-- Multi browser support (Safari/ios)
+- First release on chrome store
+- Add other websites support: Rotten tomatoes, TVDB, tmdb, trakt...
+- Multi browser support (Firefox/Safari/ios)
 
 ## Development
 

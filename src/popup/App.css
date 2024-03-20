@@ -13,9 +13,10 @@
   /* white-space: nowrap; */
   text-align: left;
   text-overflow: ellipsis;
+  height: 55px;
 }
 
-.truncText:hover{
+.fullText{
   overflow: visible;
   white-space: normal;
   height:auto;

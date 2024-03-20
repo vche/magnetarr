@@ -6,7 +6,7 @@ function handlePageAction(tabInfo) {
     if ((tabArray[0])&&(getProviderFromUrl(tabArray[0].url))) {
         chrome.action.enable(tabInfo.tabId);
     } else {
-        chrome.action.disable(tabInfo.tabId);
+      chrome.action.disable(tabInfo.tabId);
     }
   });
 }
