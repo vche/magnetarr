@@ -1,4 +1,4 @@
-import { ItemTypes } from './server';
+import { Item, ItemTypes } from './server';
 
 class Provider {
     static get name() { return ""; }
@@ -20,12 +20,12 @@ export class Imdb extends Provider {
         this.xmlparser = new DOMParser();
 	}
 
-    urlMatch(url) { return url.match(/\/\/www\.imdb.com\/.+\/tt\d{7,8}\//)?true:false; }
-
-    imdbIdFromUrl(url) {
+    _imdbIdFromUrl(url) {
         const imdbid = this.idRegex.exec(url);
         return (imdbid) ? imdbid[0].slice(1) : "";
     }
+
+    urlMatch(url) { return url.match(/\/\/www\.imdb.com\/.+\/tt\d{7,8}\//)?true:false; }
 
     async tvdbidFromImdbid(imdbid) {
         const url = "http://thetvdb.com/api/GetSeriesByRemoteID.php?imdbid=" + imdbid;
@@ -55,19 +55,15 @@ export class Imdb extends Provider {
     }
 
     async itemFromUrl(url) {
-        const imdbid = this.imdbIdFromUrl(url);
-        if (!imdbid) {
-            return {itemid: null, itemtype: ItemTypes.Unknown}
-        }
+        const imdbid = this._imdbIdFromUrl(url);
+        if (!imdbid) { return new Item() }
 
         const tvdbid = await this.tvdbidFromImdbid(imdbid)
         console.debug("imdb id " + imdbid + " // tvdb id " + tvdbid);
 
         // If we have a tvid, that's a serie. otherwise a movie
-        if (tvdbid){
-            return {itemid: tvdbid, itemtype: ItemTypes.Serie}
-        }
-        return {itemid: imdbid, itemtype: ItemTypes.Movie}
+        if (tvdbid) { return new Item(tvdbid, ItemTypes.Serie) }
+        else return new Item(imdbid, ItemTypes.Movie)
     }
 
         // async ImdbidFromTitle(title,ismovie) {

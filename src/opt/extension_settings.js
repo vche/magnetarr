@@ -59,10 +59,8 @@ function CliArrSettings( { itemtype } ) {
   // Load config from settings for this server
   React.useEffect(() => {
     if (!server) {
-      console.log(itemtype)
       const new_server = getServerForType(itemtype);
-      if (new_server) new_server.loadConfig((items) => { setServer(new_server);});
-      // if (new_server) new_server.loadConfig().then((items) => { setServer(new_server);});
+      if (new_server) new_server.loadConfig().then((items) => { setServer(new_server);} );
     }
   }, [server])
 
@@ -72,7 +70,32 @@ function CliArrSettings( { itemtype } ) {
     setTimeout(() => { setter(""); }, 2000);
   }
 
-  // Validate the form, test config, and store the update
+  // Validate the config and store it
+  async function validateConfig(event) {
+    try {
+      // Save config in server object
+      server.host = event.target.id_host.value;
+      server.port = event.target.id_port.value;
+      server.apikey = event.target.id_apikey.value;
+      server.user = event.target.id_user.value;
+      server.password = event.target.id_pass.value;
+
+      // Test server object
+      const data = await server.get("/api/v3/system/status");
+      console.log(`Detected ${data.appName} ${data.version}`);
+      server.enabled = true;
+    }
+    catch(error) {
+      server.enabled = false;
+      throw(error)
+    }
+    finally {
+      // Save the config
+      await server.saveConfig();
+    }
+  }
+
+   // Validate the form, test config, and store the update
   function handleSubmit(event) {
       var validated = true;
       event.preventDefault();
@@ -92,31 +115,15 @@ function CliArrSettings( { itemtype } ) {
       else {setInvalidKey(""); }
 
       if (validated && server){
-        // Set the validated data
-        server.host = event.target.id_host.value;
-        server.port = event.target.id_port.value;
-        server.apikey = event.target.id_apikey.value;
-        server.user = event.target.id_user.value;
-        server.password = event.target.id_pass.value;
-        
-        server.get("/api/v3/system/status").then(
-          (data) => {
-            console.log(`Detected ${data.appName} ${data.version}`);
-            server.enabled = true;
-            notify(setSuccessText, `${server.name} configuration verified, server enabled`);
-          }
+        validateConfig(event).then(
+          () => { notify(setSuccessText, `${server.name} configuration verified, server enabled`); }
         ).catch(
-          (error) => { 
-            server.enabled = false;
-            notify(setErrorText, `${server.name} configuration failed [${error}], server disabled`);
-          }
-        ).finally(
-          () => { server.saveConfig(() => { console.log(`${server.name} configuration saved.`); }); }
+          (error) => { notify(setErrorText, `${server.name} configuration failed [${error}], server disabled`); }
         );
       }
    };
 
-  return (
+   return (
       <div>
           {server && (
             <form onSubmit={handleSubmit}>

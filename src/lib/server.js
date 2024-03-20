@@ -6,6 +6,30 @@ export const ItemTypes = {
 	Serie: "serie",
 }
 
+export class Item {
+    constructor(itemid=null, itemtype=ItemTypes.Unknown, itemslug = null, exists = null, properties = {})
+    {
+        this.provider = null;
+        this.server = null;
+
+        this.itemid = itemid;
+        this.itemtype = itemtype;
+        this.itemslug = itemslug;
+        this.properties = properties;
+        this.exists = exists;
+    }
+
+    getPosterUrl() {
+        if (this.properties && this.properties.images) {
+            for (var i = 0; i < this.properties.images.length; i++) {
+                if (this.properties.images[i].coverType === "poster") {
+                    return this.properties.images[i].remoteUrl;
+                 }
+            }
+        }
+    }
+}
+
 export class Server {
 	constructor (name, default_port=0) {
 		this.name = name;
@@ -35,8 +59,11 @@ export class Server {
 
         // Set server preferences
         this.monitored = server_settings.preferences.monitored || true ;
-        this.profileid = server_settings.preferences.qualityProfileId || "1" ;
-        this.auxinfo = server_settings.preferences.auxInfo || "1" ;
+        this.profileid = server_settings.preferences.qualityProfileId || "" ;
+        this.auxinfo = server_settings.preferences.auxInfo || "" ;
+        this.folder = server_settings.preferences.folder || "" ;
+        this.profiles = [];
+        this.folders = [];
     }
 
     // Get the server config dictionary
@@ -56,33 +83,32 @@ export class Server {
 			    "monitored": this.monitored,
 			    "qualityProfileId": this.profileid,
 			    "auxInfo": this.auxinfo, // min availability for movies, series type for series
+			    "folder": this.folder,
             },
         }
     }
 
     // Load the config from the extension storage
-    loadConfig(callback = null) {
+    async loadConfig(loadProfiles=false, loadFolders=false) {
         const wanted = {}
         wanted[this.name] = this.getConfig()
-        chrome.storage.sync.get(
-          wanted,
-            (items) => {
-              this.setConfig(items[this.name]);
-              console.debug(`Loaded ${this.name} config: ${JSON.stringify(this.getConfig())}`);
-              if (callback) callback(items);
-            }
-        );
+        const items = await chrome.storage.sync.get(wanted);
+
+        this.setConfig(items[this.name]);
+        console.debug(`Loaded ${this.name} config: ${JSON.stringify(this.getConfig())}`);
+
+        if (loadProfiles) { this.profiles = await this.getProfiles(); }
+        if (loadFolders) { this.folders = await this.getFolders(); }
+
+        return items;
     }
 
     // Save config to the extension storage
-    saveConfig(callback) {
+    async saveConfig() {
         const wanted = {}
         wanted[this.name] = this.getConfig()
         console.debug(`Saved ${this.name} config: ${JSON.stringify(this.getConfig())}`);
-        chrome.storage.sync.set(
-            wanted, 
-            () => { callback(); }
-        );
+        await chrome.storage.sync.set(wanted);
     }
 
     // Build the server url
@@ -132,115 +158,85 @@ export class Server {
         }
     }
 
+    // post()
+
     getLogo(size="48") {
-        return `./img/${this.name}/${this.name}-${size}.png`;
+        return `/img/${this.name}/${this.name}-${size}.png`;
     }
 
-    itemUrlPath() { return ""; }
-    checkItemId(itemid, item) { return False}
-
-    async itemExists(itemid = null, itemslug = null) {
-        const response = await this.get(this.itemUrlPath());
+    // Check if an item exists based on its id and/or slyf, returns its slug or null
+    async itemExists(item) {
+        const response = await this.getItemList();
         for (var i = 0; i < response.length; i++) {
             const elt = response[i];
-            if ((itemid && this.checkItemId(itemid, elt)) || (itemslug && itemslug === elt.titleSlug)) {
+            if ((item.itemid && this.checkItemId(item.itemid, elt)) || (item.itemslug && item.itemslug === elt.titleSlug)) {
                 return elt.titleSlug;
             }
         }
+        return null;
     }
-    //     isExistingMovie(imdbid) {
-    //         var self = this;
-    //         return new Promise(function(resolve, reject) {
-    //             self.get("/api/v3/movie", "").then(function(response) {
-    //                 for (var i = 0; i < response.text.length; i++) {
-    //                     if (imdbid === response.text[i].imdbId) {
-    //                         resolve(response.text[i].titleSlug);
-    //                     }
-    //                 }
-    //                 resolve("");
-    //             }).catch(function(error) {
-    //                 reject(error);
-    //             });
-    //         });
-    //     }
 
-    // 	isExistingMovieByTitleSlug(titleSlug) {
-    // 		var self = this;
-    // 		return new Promise(function(resolve, reject) {
-    // 			self.get("/api/v3/movie", "").then(function(response) {
-    // 				for (var i = 0; i < response.text.length; i++) {
-    // 					if (titleSlug === response.text[i].titleSlug) {
-    // 						resolve(response.text[i].titleSlug);
-    // 					}
-    // 				}
-    // 				resolve("");
-    // 			}).catch(function(error) {
-    // 				reject(error);
-    // 			});
-    // 		});
-    // 	}
-    // }
-    // async isExistingSeries(tvdbid) {
-    //     var self = this;
-    //     return new Promise(function(resolve, reject) {
-    //         self.get("/api/v3/series", "").then(function(response) {
-    //             for (var i = 0; i < response.text.length; i++) {
-    //                 if (tvdbid == response.text[i].tvdbId) {
-    //                     resolve(response.text[i].titleSlug);
-    //                 }
-    //             }
-    //             resolve("");
-    //         }).catch(function(error) {
-    //             reject(error);
-    //         });
-    //     });
-    // }
+    // Look for an item based on info provided (id and/or slug), fetch and fill other info (exists, properties)
+    async getItemInfo(item) {
+        // Query for both existence and item info
+        const [slug, results] = await Promise.all([this.itemExists(item), this.lookupItem(item)]);
 
-    // isExistingSeriesByTitleSlug(titleSlug) {
-    //     var self = this;
-    //     return new Promise(function(resolve, reject) {
-    //         self.get("/api/v3/series", "").then(function(response) {
-    //             for (var i = 0; i < response.text.length; i++) {
-    //                 if (titleSlug === response.text[i].titleSlug) {
-    //                     resolve(response.text[i].titleSlug);
-    //                 }
-    //             }
-    //             resolve("");
-    //         }).catch(function(error) {
-    //             reject(error);
-    //         });
-    //     });
-    // }
-    // }
-    async lookupItem(itemid) {
-        //if exist -> existing itemslug + movie
-        // if found: -> movie
-
-        const existing_elt = await this.itemExists(itemid=itemid);
-
-        // TODO: check if exist + lookup to get info to display !
-        // do both in // and wait for join ? hmm.....
-        if (existing_elt) {
-            console.log("yp pipo trouve: " + existing_elt)
-            // {"type": "movie", "movie": lookup, "existingSlug": existingSlug});
+        // Consolidate results
+        item.itemslug = slug;
+        item.exists = (item.itemslug)?true:false;
+        if (results.length == 0) { item.properties = null; }
+        if (results.length > 0) {
+            item.properties = results[0];
+            if (results.length > 1) console.log("Warning, several results found for this item");
         }
-        else {
-            console.log("yp pipo trouve: " + existing_elt)
-            // {"type": "movie", "movie": lookup, "existingSlug": existingSlug});
 
-        }
-        // Return: item_info + item_slug
-        // {"type": "movie", "movie": lookup, "existingSlug": existingSlug});
+        return item
     }
+
+    async getProfiles() {
+        const result = await this.get(this.getProfileUrlPath());
+        // for (let i = 0; i < result.length; i++) { console.log("prof: " + result[i].id + " // " + result[i].name); }
+        return result;
+    }
+
+    async getFolders() {
+        const result = await this.get(this.getFolderUrlPath());
+        const folders = []
+        for (let i = 0; i < result.length; i++) { 
+            // console.log("prof: " + result[i].id + " // " + result[i].path);
+            folders.push({"name": result[i].path, "id": result[i].path})
+        }
+        return folders;
+    }
+
+    async getItemList() { return []; }
+    async lookupItem(item) { return {}; }
+    getAuxInfoValues() { return []; }
+    getItemUrl(item) { return this.getUrl() + "/" + item.itemslug }
+    checkItemId(itemid, element) { return False; }
+    getProfileUrlPath() { return "/profiles";}
+    getFolderUrlPath() { return "/folders";}
 }
 
 export class Radarr extends Server {
 	constructor () {
         super("radarr", 7878)
     }
-
-    itemUrlPath() { return "/api/v3/movie"; }
-    checkItemId(itemid, item) {  return (itemid === item.imdbId); }
+    
+    async getItemList() { return await this.get("/api/v3/movie"); }
+    async lookupItem(item) { return await this.get("/api/v3/movie/lookup", null, "term=imdb%3A%20" + item.itemid); }
+    checkItemId(itemid, element) {  return (itemid === element.imdbId); }
+    getItemUrl(item) { return this.getUrl() + "/movies/" + item.itemslug }
+    getProfileUrlPath() { return "/api/v3/qualityProfile";}
+    getFolderUrlPath() { return "/api/v3/rootfolder";}
+    getAuxInfoValues() {
+        return [
+            {name: "Announced", id: "announced"},
+            {name: "In Cinemas", id: "inCinemas"},
+            {name: "Physical/Web", id: "released"},
+            {name: "Pre DB/Web", id: "preDB"}
+          ];    
+    }
 }
 
 export class Sonarr extends Server {
@@ -248,21 +244,18 @@ export class Sonarr extends Server {
         super("sonarr", 8989)
     }
 
-    itemUrlPath() { return "/api/v3/series"; }
-    checkItemId(itemid, item) { return ((item.tvdbId) && (itemid === item.tvdbId.toString())); }
+    async getItemList() { return await this.get("/api/v3/series"); }
+    async lookupItem(item) { return await this.get("/api/v3/series/lookup", null, "term=tvdb%3A%20" + item.itemid); }
+    checkItemId(itemid, element) { return ((element.tvdbId) && (itemid === element.tvdbId.toString())); }
+    getItemUrl(item) { return this.getUrl() + "/series/" + item.itemslug }
+    getProfileUrlPath() { return "/api/v3/qualityProfile";}
+    getFolderUrlPath() { return "/api/v3/rootfolder";}
+    getAuxInfoValues() {
+        return [{name: "Standard", id: "standard"}, {name: "Daily", id: "daily"}, {name: "Anime", id: "anime"}];
+    }
 }
 
 
-// global
-// post()
-// getProfiles()
-// getFolders()
-// openItem(itemslug)
-    // use open_url "/movies/"" or "/series/"
-    // chrome.tabs.create({
-    //     url: radarr.constructBaseUrl() + "/movies/" + media.existingSlug
-    //     url: sonarr.constructBaseUrl() + "/series/" + media.existingSlug
-    // });
 // addItem()
     // tbd
     // radarr.addMovie(
@@ -282,53 +275,72 @@ export class Sonarr extends Server {
     //     $('#lstFolderPath').val() ? $('#lstFolderPath').val() : addPath,
     //     $('#lstLanguage').val()
     // );
+// 
+// addMovie(movie, qualityId, monitored, minAvail, addSearch, folderPath) {
+//     pulsarr.loading();
+//     var newMovie = {
+//         "title": movie.title,
+//         "year": movie.year,
+//         "qualityProfileId": parseInt(qualityId),
+//         "titleSlug": movie.titleSlug,
+//         "images": movie.images,
+//         "tmdbid": movie.tmdbId,
+//         "rootFolderPath": folderPath,
+//         "monitored": monitored,
+//         "minimumAvailability": minAvail,
+//         "addOptions": {
+//             "searchForMovie": addSearch
+//         }
+//     };
 
+//     console.log("Add movie");
+//     console.log(newMovie);
 
+//     this.post("/api/v3/movie", newMovie).then(function(response) {
+//         radarr.updatePreferences(monitored, qualityId, minAvail, folderPath);
+//         pulsarr.info("Movie added to Radarr!");
+//         setTimeout(function() {
+//             window.close();
+//         }, 1500);
+//     }).catch(function(error) {
+//         console.log("Error: " + error)
+//         pulsarr.info(error);
+//     });
+// }
+// addSeries(series, qualityId, seriesType, monitored, addSearch, folderPath, languageId) {
+//     pulsarr.loading();
 
+//     var newSeries = {
+//         "title": series.title,
+//         "year": series.year,
+//         "qualityProfileId": parseInt(qualityId),
+//         "languageProfileId": languageId,
+//         "seriesType": seriesType,
+//         "titleSlug": series.titleSlug,
+//         "images": series.images,
+//         "tvdbId": series.tvdbId,
+//         "rootFolderPath": folderPath,
+//         "monitored": monitored,
+//         "addOptions": {
+//             "ignoreEpisodesWithFiles": false,
+//             "ignoreEpisodesWithoutFiles": false,
+//             "searchForMissingEpisodes": addSearch
+//         }
+//     };
+//     console.log("Adding serie");
+//     console.log(newSeries);
 
-    // lookupMovie(imdbid, tvdbid = "") {
-    //     var self = this;
-    //     // antipattern: resolve acts as reject and vice versa
-    //     return new Promise(function(resolve, reject) {
-	// 		// Cancel movie search if there a tvid. This means the imdb entry related to a valid tv show.
-	// 		// This prevents issues where an imdb show also has a movie entry; e.g. tt6741278.
-	// 		// The initial behavior was "first answer wins". This forces tv show entry over movie.
-    //         if (imdbid === "" || tvdbid != "") {
-    //             resolve();
-    //         } else {
-    //             var existingSlug = self.isExistingMovie(imdbid);
-    //             var lookup = self.get("/api/v3/movie/lookup", "term=imdb%3A%20" + imdbid);
-    //             Promise.all([lookup, existingSlug]).then(function(response) {
-	// 				console.log("movie lookup result:");
-	// 				console.log(response);
-	// 				if (response[0].text.length == 0) resolve();
-    //                 reject({"type": "movie", "movie": response[0], "existingSlug": response[1]});
-    //             }).catch(function(error) {
-    //                 resolve(error);
-    //             });
-    //         }
-    //     });
-    // }
-    // async lookupSeries(tvdbid) {
-    //     var self = this;
-    //     // antipattern: resolve acts as reject and vice versa
-    //     return new Promise(function(resolve, reject) {
-    //         if (tvdbid === "") {
-    //             resolve();
-    //         } else {
-    //             var existingSlug = self.isExistingSeries(tvdbid);
-    //             var lookup = self.get("/api/v3/series/lookup", "term=tvdb%3A%20" + tvdbid);
-    //             Promise.all([lookup, existingSlug]).then(function(response) {
-	// 				console.log("serie lookup result:");
-	// 				console.log(response);
-	// 				if (response[0].text.length == 0) resolve();
-    //                 reject({"type": "series", "series": response[0], "existingSlug": response[1]});
-    //             }).catch(function(error) {
-    //                 resolve(error);
-    //             });
-    //         }
-    //     });
-    // }
+//     this.post("/api/v3/series", newSeries).then(function(response) {
+//         sonarr.updatePreferences(monitored, qualityId, seriesType, folderPath);
+//         pulsarr.info("Series added to Sonarr!");
+//         setTimeout(function() {
+//             window.close();
+//         }, 1500);
+//     }).catch(function(error) {
+//         pulsarr.info(error);
+//     });
+// }
+
 
 // lookupItemByTitleYear(title, year)
     // async lookupMovieByTitleYear(title, year) {

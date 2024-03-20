@@ -1,10 +1,11 @@
 #card-header {
-  padding-right: 15px;
+  /* padding-right: 15px; */
+  padding-top: 5px;
 }
 
-#App {
+.App {
   /* text-align: center; */
-  width: 400px;
+  width: 350px;
 }
 
 .truncText {
