@@ -2,9 +2,9 @@
   "manifest_version": 3,
 
   "name": "Magnetarr",
-  "author": "vche",
-  "description": "Add movies/series to Radarr/Sonarr from IMDB and TVDB",
-  "version": "1.0",
+  "author": "Vivien Chene",
+  "description": "Add movies/series to Radarr/Sonarr from IMDB and other sites",
+  "version": "1.0.0",
 
   "icons": {
     "16": "img/magnetarr/magnetarr-16.png",
@@ -48,7 +48,6 @@
   ],
 
   "host_permissions": [
-    "https://ajax.googleapis.com/",
     "<all_urls>"
   ]
 

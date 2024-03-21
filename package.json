@@ -37,8 +37,9 @@
     "start": "parcel",
     "build": "parcel build",
     "dev": "nodemon --exec npm run build",
-    "clean": "rm -r release/src/*; rm -r .parcel-cache",
-    "release": "npm run clean; npm run build"
+    "clean": "rm -rf release/src/*; rm -rf .parcel-cache; rm -f magnetarr.zip",
+    "pack": "(cd release; zip -r ../magnetarr.$(cat manifest.json | jq -r '.version').zip ./* -x './release/img/svg/*' -x '.DS_Store')",
+    "release": "npm run clean; npm run build; npm run pack"
   },
   "nodemonConfig": {
     "verbose": true,
