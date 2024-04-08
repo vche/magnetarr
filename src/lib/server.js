@@ -7,16 +7,17 @@ export const ItemTypes = {
 }
 
 export class Item {
-    constructor(itemid=null, itemtype=ItemTypes.Unknown, itemslug = null, exists = null, properties = {})
+    constructor(itemtype=ItemTypes.Unknown, imdbid=null, tvdbid=null, itemslug = null, exists = null, properties = {})
     {
         this.provider = null;
         this.server = null;
 
-        this.itemid = itemid;
         this.itemtype = itemtype;
         this.itemslug = itemslug;
         this.properties = properties;
         this.exists = exists;
+        this.tvdbid = tvdbid;
+        this.imdbid = imdbid;
     }
 
     getPosterUrl() {
@@ -127,7 +128,6 @@ export class Server {
 
     async get(endpoint, data=null, params=null) { return await this.request("get", endpoint, data, params); }
     async post(endpoint, data=null, params=null) { return await this.request("post", endpoint, data, params); }
-
     async request(method, endpoint, data=null, params=null) {
         try {
             // Build URL
@@ -148,12 +148,12 @@ export class Server {
                 body = JSON.stringify(data);
             }
         
-            // console.log("Request " + method + " headers: " + JSON.stringify(headers) + " body: " + body);
+            console.debug("Request " + method + " url: " + url + " headers: " + JSON.stringify(headers) + " body: " + body);
             const res = await fetch(url, { method: method, body: body, headers: headers });
 
             if (res.status >= 400) throw new Error(`${res.status} (${res.statusText})`)
             data = await res.json();
-            // console.log(`Request to ${url}: ${res.status}`); console.log(data);
+            console.debug(`Request to ${url}: ${res.status}`); console.log(data);
 
             return data;
         } catch (error) {
@@ -171,7 +171,7 @@ export class Server {
         const response = await this.getItemList();
         for (var i = 0; i < response.length; i++) {
             const elt = response[i];
-            if ((item.itemid && this.checkItemId(item.itemid, elt)) || (item.itemslug && item.itemslug === elt.titleSlug)) {
+            if ((item && this.checkItemId(item, elt)) || (item.itemslug && item.itemslug === elt.titleSlug)) {
                 return elt.titleSlug;
             }
         }
@@ -186,7 +186,7 @@ export class Server {
         // Consolidate results
         item.itemslug = slug;
         item.exists = (item.itemslug)?true:false;
-        if (results.length == 0) { item.properties = null; }
+        if (results && results.length == 0) { item.properties = null; }
         if (results.length > 0) {
             item.properties = results[0];
             if (results.length > 1) console.log("Warning, several results found for this item");
@@ -211,7 +211,10 @@ export class Server {
 
     getAuxInfoValues() { return []; }
     getItemUrl(item) { return this.getUrl() + this.getItemPath(item) }
-    checkItemId(itemid, element) { return False; }
+    checkImdbId(item, elt) { return ((item.imdbid) && (item.imdbid === elt.imdbId)); }
+    checkTvdbId(item, elt) { return ((item.tvdbid && elt.tvdbId) && (item.tvdbid === elt.tvdbId.toString())); }
+    checkItemId(item, elt) { return (this.checkTvdbId(item, elt) || this.checkImdbId(item, elt)); }
+
     getItemPath(item={}) { return "/item" + ((item) ? `/${item.itemslug}` : ""); }
     getProfileUrlPath() { return "/profiles";}
     getFolderUrlPath() { return "/folders";}
@@ -222,91 +225,6 @@ export class Server {
         const newItem = this.buildItemDict(item);
         await this.post(this.getItemPath(), newItem);
     }
-
-    // tbd
-    // radarr.addMovie(
-    //     media.movie.text[0],
-    //     $('#lstProfile').val(),
-    //     $('#monitored').prop('checked'),
-    //     $('#lstMinAvail').val(),
-    //     false,
-    //     $('#lstFolderPath').val() ? $('#lstFolderPath').val() : addPath
-    // );
-    // sonarr.addSeries(
-    //     media.series.text[0],
-    //     $('#lstProfile').val(),
-    //     $('#lstSeriesType').val(),
-    //     $('#monitored').prop('checked'),
-    //     false,
-    //     $('#lstFolderPath').val() ? $('#lstFolderPath').val() : addPath,
-    //     $('#lstLanguage').val()
-    // );
-// 
-// addMovie(movie, qualityId, monitored, minAvail, addSearch, folderPath) {
-//     pulsarr.loading();
-//     var newMovie = {
-//         "title": movie.title,
-//         "year": movie.year,
-//         "qualityProfileId": parseInt(qualityId),
-//         "titleSlug": movie.titleSlug,
-//         "images": movie.images,
-//         "tmdbid": movie.tmdbId,
-//         "rootFolderPath": folderPath,
-//         "monitored": monitored,
-//         "minimumAvailability": minAvail,
-//         "addOptions": {
-//             "searchForMovie": addSearch
-//         }
-//     };
-
-//     console.log("Add movie");
-//     console.log(newMovie);
-
-//     this.post("/api/v3/movie", newMovie).then(function(response) {
-//         radarr.updatePreferences(monitored, qualityId, minAvail, folderPath);
-//         pulsarr.info("Movie added to Radarr!");
-//         setTimeout(function() {
-//             window.close();
-//         }, 1500);
-//     }).catch(function(error) {
-//         console.log("Error: " + error)
-//         pulsarr.info(error);
-//     });
-// }
-// addSeries(series, qualityId, seriesType, monitored, addSearch, folderPath, languageId) {
-//     pulsarr.loading();
-
-//     var newSeries = {
-//         "title": series.title,
-//         "year": series.year,
-//         "qualityProfileId": parseInt(qualityId),
-//         "languageProfileId": languageId,
-//         "seriesType": seriesType,
-//         "titleSlug": series.titleSlug,
-//         "images": series.images,
-//         "tvdbId": series.tvdbId,
-//         "rootFolderPath": folderPath,
-//         "monitored": monitored,
-//         "addOptions": {
-//             "ignoreEpisodesWithFiles": false,
-//             "ignoreEpisodesWithoutFiles": false,
-//             "searchForMissingEpisodes": addSearch
-//         }
-//     };
-//     console.log("Adding serie");
-//     console.log(newSeries);
-
-//     this.post("/api/v3/series", newSeries).then(function(response) {
-//         sonarr.updatePreferences(monitored, qualityId, seriesType, folderPath);
-//         pulsarr.info("Series added to Sonarr!");
-//         setTimeout(function() {
-//             window.close();
-//         }, 1500);
-//     }).catch(function(error) {
-//         pulsarr.info(error);
-//     });
-// }
-
 }
 
 export class Radarr extends Server {
@@ -315,7 +233,6 @@ export class Radarr extends Server {
     }
     
     getItemUrl(item) { return this.getUrl() + "/movie" + ((item) ? `/${item.itemslug}` : "") }
-    checkItemId(itemid, element) {  return (itemid === element.imdbId); }
     getItemPath(item=null) { return "/api/v3/movie" + ((item) ? `/${item.itemslug}` : ""); }
     getProfileUrlPath() { return "/api/v3/qualityProfile";}
     getFolderUrlPath() { return "/api/v3/rootfolder";}
@@ -344,7 +261,12 @@ export class Radarr extends Server {
             }
         };
     }
-    async lookupItem(item) {return await this.get(this.getItemPath() + "/lookup", null, "term=imdb%3A%20" + item.itemid);}
+    async lookupItem(item) {
+        // radarr only supports imdb id
+        const term = (item.imdbid) ? "imdb%3A%20" + item.imdbid : null;
+        return await this.get(this.getItemPath() + "/lookup", null, "term=" + term);
+    }
+
 }
 
 export class Sonarr extends Server {
@@ -353,7 +275,6 @@ export class Sonarr extends Server {
     }
 
     getItemUrl(item) { return this.getUrl() + "/series" + ((item) ? `/${item.itemslug}` : "") }
-    checkItemId(itemid, element) { return ((element.tvdbId) && (itemid === element.tvdbId.toString())); }
     getItemPath(item) { return "/api/v3/series" + ((item) ? `/${item.itemslug}` : ""); }
     getProfileUrlPath() { return "/api/v3/qualityProfile";}
     getFolderUrlPath() { return "/api/v3/rootfolder";}
@@ -378,7 +299,11 @@ export class Sonarr extends Server {
             }
         };
     }
-    async lookupItem(item) { return await this.get(this.getItemPath() + "/lookup", null, "term=tvdb%3A%20" + item.itemid); }
+    async lookupItem(item) {
+        (item.itemtype == ItemTypes.Movie)
+        const term = (item.tvdbid) ? "tvdb%3A%20" + item.tvdbid : ((item.imdbid) ? "imdb%3A%20" + item.imdbid : null);
+        return await this.get(this.getItemPath() + "/lookup", null, "term=" + term);
+    }
 }
 
 

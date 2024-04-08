@@ -41,8 +41,7 @@ const borderStyles = {
 };
 
 async function getCurrentTabUrl() {
-  var queryInfo = { active: true, currentWindow: true };
-  const tabs = await chrome.tabs.query(queryInfo);
+  const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
   return tabs[0].url;
 }
 
@@ -86,8 +85,8 @@ function ItemAdd({item, seterror}) {
 
     setLoading(true);
     item.server.addItem(item).then(() => {
+      setTimeout(function() { window.close(); }, 2000);
       if (seterror) seterror(`${item.itemtype} added successfully`);
-      // setTimeout(function() { window.close(); }, 200);
   }).catch((error) => {
       if (seterror) seterror(`Error adding ${item.itemtype}: ${error}`, true);
       console.log("Error adding item:"); console.log(error);
@@ -162,7 +161,7 @@ function ItemContent({item}) {
 
   const char = 85;
   var shortcontent = "";
-  if (item && (item.properties.overview.length > char)) {
+  if (item && item.properties.overview && (item.properties.overview.length > char)) {
     const last = item.properties.overview.substr(0, char).lastIndexOf(' ');
     shortcontent = item.properties.overview.substr(0, last) + ' (...)';
   }
@@ -197,14 +196,20 @@ function ItemContent({item}) {
 function ItemHeader({item}) {
   return (
     <Typography component="div" variant="h5" sx={{ display: 'flex', flexDirection: 'row', p: 1, justifyContent: 'space-between' }}>
-      <Tooltip title={`Open ${item.server.name}`}>
-        <Box sx={{ display: 'flex', ml:1}}>
-          <a id="card-header" href={item.server.getUrl()}><img src={item.server.getLogo(32)}/></a>
+      {item ? (<>
+        <Tooltip title={`Open ${item.server.name}`}>
+          <Box sx={{ display: 'flex', ml:1}}>
+            <a id="card-header" href={item.server.getUrl()}><img src={item.server.getLogo(32)}/></a>
+          </Box>
+          </Tooltip>
+        <Box sx={{ display: 'flex', pl: 1}}>
+          {`Add to ${item.server.name}`}
         </Box>
-        </Tooltip>
-      <Box sx={{ display: 'flex', pl: 1}}>
-        {`Add to ${item.server.name}`}
-      </Box>
+      </>):(
+        <Box sx={{ display: 'flex', pl: 1}}>
+        Loading
+        </Box>
+      )}
       <Tooltip title="Open magnetarr settings">
         <IconButton aria-label="settings" onClick={() => {chrome.runtime.openOptionsPage()}}>
           <SettingsIcon />
@@ -226,19 +231,22 @@ export default function App() {
       // Find item id and type from the url to get the server that can handle this item
       const item = await  provider.itemFromUrl(targetUrl); 
       const server = getServerForType(item.itemtype);
-      item.provider = provider;
-      item.server = server;
-      // console.log(`Found: ${item.itemid}, type: ${item.itemtype}, server: ${server.name}`);
+      if (server) {
+        item.provider = provider;
+        item.server = server;
+        // console.log(`Found: ${item.imdbid}/${item.tvdbid}, type: ${item.itemtype}, server: ${server.name}`);
 
-      // Load config, and check if ther server is enabled before notifying the ui
-      await server.loadConfig(true, true);
-      if (! server.enabled) { throw Error("Server not enabled, make sure to configure it."); }
+        // Load config, and check if ther server is enabled before notifying the ui
+        await server.loadConfig(true, true);
+        if (! server.enabled) { throw Error("Server not enabled, make sure to configure it."); }
 
-      // Querying the item id to get info
-      await server.getItemInfo(item);
-      return item;
+        // Querying the item id to get info
+        await server.getItemInfo(item);
+        return item;
+      }
+      else { console.log(item); throw Error("No server found for item type " + item.itemtype); }
     }
-    console.log("No provider found matching url, nothing to do " + targetUrl);
+    else throw Error("No provider found matching url, nothing to do " + targetUrl);
   }
 
   React.useEffect(() => {
@@ -248,27 +256,22 @@ export default function App() {
         console.log("Item info: "); console.log(item);
       }).catch((error) => {
         console.error("Couldn't get item info: " + error);
-        setStatus("Couldn't extract item information: " + error, true);
+        setStatus("Couldn't extract item information: " + error, true, 5000);
       });
     }
   }, [item])
 
-  function setStatus(text, error=false) {
+  function setStatus(text, error=false, timeout=1500) {
     setErrorText({text: text, class: error?"errorText":"successText"});
     setTimeout(function() {
       setErrorText("")
-    }, 1500);
+    }, timeout);
 
   }
 
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      {!item?(
-        <Box sx={{ display: 'flex', justifyContent: 'center', width: 200, height: 200, pt:8}}>
-          <CircularProgress />
-        </Box>        
-      ):(
         <Card className="App" sx={{ display: 'flex', flexDirection: 'column' }}>
           <ItemHeader item={item} />
 
@@ -278,23 +281,30 @@ export default function App() {
                 <Typography variant="caption" display="block" gutterBottom className={errorText.class}>
                   {errorText.text}
                 </Typography>
-            </Box>)}
+          </Box>)}
             
-          <ItemContent item={item} />
-    
-          {item.exists?(
-            <Box sx={{ ...borderStyles, display: 'flex', flexDirection: 'column', mt: 0, mb: 2}}>
-              <Tooltip title={`Open ${item.itemtype} in ${item.server.name}`}>
-                <Button variant="outlined" href="#outlined-buttons" color="success" onClick={() => {openUrl(item)}}>
-                  Already exists
-                </Button>
-              </Tooltip>
+          {!item?(
+            <Box sx={{ display: 'flex', justifyContent: 'center', width: 200, height: 200, pt:8}}>
+              <CircularProgress />
             </Box>
           ):(
-            <ItemAdd item={item} seterror={setStatus} />
+            <>
+            <ItemContent item={item} />
+
+            {item.exists?(
+              <Box sx={{ ...borderStyles, display: 'flex', flexDirection: 'column', mt: 0, mb: 2}}>
+                <Tooltip title={`Open ${item.itemtype} in ${item.server.name}`}>
+                  <Button variant="outlined" href="#outlined-buttons" color="success" onClick={() => {openUrl(item)}}>
+                    Already exists
+                  </Button>
+                </Tooltip>
+              </Box>
+            ):(
+              <ItemAdd item={item} seterror={setStatus} />
+            )}
+            </>
           )}
         </Card>
-      )}
     </ThemeProvider>
   );
 }
