@@ -1,12 +1,9 @@
 import { Item, ItemTypes } from './server';
 
-class TvdbApi {
-    // Query the tvdp api
-    // Legacy api https://github.com/lertify/thetvdb-api/
-    // API v4: https://thetvdb.github.io/v4-api
-
+class CliApi {
     constructor () {
-        this.API_KEY = "538d3d06-3679-417e-8d2c-594c1b107b6b"
+        this.api_key = null
+        this.login_url = null;
         this.token = null;
 
         // DOMParser is not available in service worker (but we don't need it). so catch the error
@@ -16,12 +13,15 @@ class TvdbApi {
     }
 
     async login() {
-        const res = await this.request('https://api4.thetvdb.com/v4/login', false, "post", {"apikey": this.API_KEY}, true);
-        try {
-            this.token = res.data.token;
-        } catch (error) {
-            console.log(`Error logging to tvdb api: ${error}`);
+        if (this.login_url) {
+            const res = await this.request(this.login_url, false, "post", {"apikey": this.api_key}, true);
+            try {
+                this.token = res.data.token;
+            } catch (error) {
+                console.log(`Error logging to tvdb api: ${error}`);
+            }
         }
+        else console.log("Can't login, no login url specified")
     }
 
     async getToken() {
@@ -47,11 +47,12 @@ class TvdbApi {
 
         if (legacy && (!this.xmlparser)) return null;
         try {
+            console.debug(`Request to ${url}, hdr: ${headers}`); 
             const res = await fetch(url, { method: method, headers: headers, body: body });
             if (res.status >= 400) throw new Error(`${res.status} (${res.statusText})`)
             if (legacy) {
                 const xmldata = await res.text();
-                console.debug(`Request to ${url}: ${res.status} ${xmldata}`); 
+                console.debug(`Response: ${xmldata}`); 
 
                 // Extract the serie id from xml data if we got some
                 const xmldoc = this.xmlparser.parseFromString(xmldata, "application/xml");
@@ -63,22 +64,47 @@ class TvdbApi {
                 }
             }
             else {
-                return await res.json();
+                const jsondata = await res.json();
+                console.debug(jsondata); 
+                return jsondata;
             }
         } catch (error) {
             console.log(`Error querying endpoint ${url}: ${error}`);
         }
         return null;
+    }
+}
 
+class TvdbApi extends CliApi {
+    // Query the tvdp api
+    // Legacy api https://github.com/lertify/thetvdb-api/
+    // API v4: https://thetvdb.github.io/v4-api
+
+    constructor () {
+        super();
+        this.api_key = "538d3d06-3679-417e-8d2c-594c1b107b6b"
+        this.login_url = 'https://api4.thetvdb.com/v4/login';
+        this.token = null;
+    }
+}
+
+class TmdbApi extends CliApi {
+    // Query the tmdp api
+    // API v3: https://developer.themoviedb.org/docs/authentication-application
+
+    constructor () {
+        super();
+        this.token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4N2RiMTBlODg3N2VkNzllZjViYzg4NzNhNGMzYjZjNyIsInN1YiI6IjY2MTQ2ODNiNTkwMDg2MDE4NTdlMjc2NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.6gU-SMaHYKUG0VnWdVx0ev9x8efiSbQIzWFgS46aMGk";
     }
 }
 
 class Provider {
     static get name() { return ""; }
 
-    constructor (name, tvdbcli=null) {
+    constructor (name, tvdbcli=null, tmdbapi=null) {
         this.name = name;
         this.tvdbapi = tvdbcli?tvdbcli:new TvdbApi();
+        this.tmdbapi = tmdbapi?tmdbapi:new TmdbApi();
 	}
     
     // Needs overwriting from child classes
@@ -130,8 +156,8 @@ class Provider {
         return null;
     }
 
-    // Get the item id and type from slug, id is tvdbid for series, and imdb id for movies
-    async itemIdFromTvdbSlug(type, slug) {        
+    // Get the item ids from slug
+    async itemFromTvdbSlug(type, slug) {        
         var api_path = null;
         var item = null;
 
@@ -157,13 +183,34 @@ class Provider {
         }
         return item;
     }
+
+    // Get the item ids from tmdb id
+    async itemFromTmdbId(type, tmdbid) {        
+        var api_path = null;
+        var item = null;
+
+        if (type && tmdbid) {
+            if (type == ItemTypes.Movie) { api_path = "movie"; }
+            else if (type == ItemTypes.Serie) { api_path = "tv"; }
+        }
+
+        if (api_path) {
+            // Get the imdb id from tmdbid
+            const url = `https://api.themoviedb.org/3/${api_path}/${tmdbid}/external_ids`;
+            const jsondoc = await this.tmdbapi.request(url);
+            if (jsondoc) {
+                item = new Item(type, jsondoc.imdb_id, jsondoc.tvdb_id)
+            }
+        }
+        return item;
+    }
 }
 
 export class Imdb extends Provider {
     static get name() { return "Imdb";}
 
-    constructor (tvdbapi=null) {
-        super(Imdb.name, tvdbapi);
+    constructor (tvdbapi=null, tmdbapi=null) {
+        super(Imdb.name, tvdbapi, tmdbapi);
         this.idRegex = new RegExp("\/tt\\d{1,8}");
 	}
 
@@ -226,8 +273,8 @@ export class Imdb extends Provider {
 export class Tvdb extends Provider {
     static get name() { return "Tvdb";}
 
-    constructor (tvdbapi=null) {
-        super(Tvdb.name, tvdbapi);
+    constructor (tvdbapi=null, tmdbapi=null) {
+        super(Tvdb.name, tvdbapi, tmdbapi);
         this.idRegex = new RegExp("\/(?<type>movies|series)\/(?<slug>.*)");
 	}
 
@@ -247,7 +294,7 @@ export class Tvdb extends Provider {
 
     async itemFromUrl(url) {
         const type_slug = this._typeSlugFromUrl(url);
-        const item = await this.itemIdFromTvdbSlug(type_slug.type, type_slug.slug)
+        const item = await this.itemFromTvdbSlug(type_slug.type, type_slug.slug)
         return (item) ? item : new Item();
     }
 }
@@ -255,54 +302,30 @@ export class Tvdb extends Provider {
 export class TheMovieDb extends Provider {
     static get name() { return "TheMovieDb";}
 
-    constructor (tvdbapi=null) {
-        super(TheMovieDb.name, tvdbapi);
-        this.idRegex = new RegExp("\/(?<type>movies|series)\/(?<slug>.*)");
+    constructor (tvdbapi=null, tmdbapi=null) {
+        super(TheMovieDb.name, tvdbapi, tmdbapi);
+        this.idRegex = new RegExp("\/(?<type>movie|tv)\/(?<tmdbid>\\d*)");
 	}
 
+    _typeIdFromUrl(url) {
+        const result = this.idRegex.exec(url);
+        if (result && result.groups) {
+            const found = result.groups;
+            found.type = (found.type == "movie") ? ItemTypes.Movie : ((found.type == "tv") ? ItemTypes.Serie: null);
+            return found;
+        }
+        return {"type": null, "tmdbid": null};
+    }
+
+    // https://www.themoviedb.org/movie/693134-dune-part-two
+    // https://www.themoviedb.org/tv/1402-the-walking-dead
     urlMatch(url) { return url.match(/.*themoviedb.org\/(tv|movie)\//)?true:false; }
 
-    // get tmdbid from title
-    // search remoteid from tvdb for tmdbid
-    // check extended from tvdbid for remote["TheMovieDB.com"] == tmdbid
-
-    // let loadFromTMBUrl = async (url) => {
-    //     var regextv = new RegExp("themoviedb.org\/tv\/");
-    //     var regexmov = new RegExp("themoviedb.org\/movie\/");
-    //     if (regextv.test(url)) {
-    //         try {
-    //             let result = await $.ajax({url: url, datatype: "xml"});
-    //             var title = $(result).find(".title").find("a").find("h2").text().trim();
-    //             var date = $(result).find(".title").find(".release_date").text().trim();
-    //             title = title + " " + date;
-    //             let imdbid = await pulsarr.ImdbidFromTitle(title,0);
-    //             let tvdbid = await pulsarr.TvdbidFromImdbid(imdbid);
-    //             let series = await sonarr.lookupSeries(tvdbid);
-    
-    //             if (series) {
-    //                 pulsarr.info(series);
-    //             }
-    //         } catch (err) {
-    //             pulsarr.init(err);
-    //         }
-    //     } else if (regexmov.test(url)) {
-    //         try {
-    //             let result = await $.ajax({url: url, datatype: "xml"});
-    //             var title = $(result).find(".title").find("a").find("h2").text().trim();
-    //             var date = $(result).find(".title").find(".release_date").text().trim();
-    //             title = title + " " + date;
-    //             let imdbid = await pulsarr.ImdbidFromTitle(title,1);
-    //             let movie = await radarr.lookupMovie(imdbid);
-    //             if (movie) {
-    //                 pulsarr.info(movie);
-    //             }
-    //         } catch (err) {
-    //             pulsarr.init(err);
-    //         }
-    //     } else {
-    //         pulsarr.info("Could not find media. Are you on a valid TV Show or Movie page?");
-    //     }
-    // }
+    async itemFromUrl(url) {
+        const type_id = this._typeIdFromUrl(url);
+        const item = await this.itemFromTmdbId(type_id.type, type_id.tmdbid)
+        return (item) ? item : new Item();
+    }
 }
 
 export class TraktTv extends Provider {
@@ -339,10 +362,11 @@ export class TraktTv extends Provider {
 
 // Build the list of available providers
 const tvdbapi = new TvdbApi();
+const tmdbapi = new TmdbApi();
 const ProviderList = {};
-ProviderList[Imdb.name] = new Imdb(tvdbapi);
-ProviderList[Tvdb.name] = new Tvdb(tvdbapi);
-// ProviderList[TheMovieDb.name] = new TheMovieDb(tvdbapi);
+ProviderList[Imdb.name] = new Imdb(tvdbapi, tmdbapi);
+ProviderList[Tvdb.name] = new Tvdb(tvdbapi, tmdbapi);
+ProviderList[TheMovieDb.name] = new TheMovieDb(tvdbapi, tmdbapi);
 // ProviderList[TraktTv.name] = new TraktTv();
 
 // Find a provider matching this url

@@ -4,7 +4,7 @@
   "name": "Magnetarr",
   "author": "Vivien Chene",
   "description": "Add movies/series to Radarr/Sonarr from IMDB and other sites",
-  "version": "1.0.0",
+  "version": "1.1.0",
 
   "icons": {
     "16": "img/magnetarr/magnetarr-16.png",
