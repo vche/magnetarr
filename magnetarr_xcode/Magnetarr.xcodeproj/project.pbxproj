@@ -1,0 +1,942 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		400B735D2BC7225700B45A4C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400B735C2BC7225700B45A4C /* AppDelegate.swift */; };
+		400B735F2BC7225700B45A4C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400B735E2BC7225700B45A4C /* SceneDelegate.swift */; };
+		400B73622BC7225700B45A4C /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 400B73612BC7225700B45A4C /* Base */; };
+		400B73652BC7225700B45A4C /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 400B73642BC7225700B45A4C /* Base */; };
+		400B736E2BC7225700B45A4C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400B736D2BC7225700B45A4C /* AppDelegate.swift */; };
+		400B73712BC7225700B45A4C /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 400B73702BC7225700B45A4C /* Base */; };
+		400B73792BC7225700B45A4C /* Magnetarr Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 400B73782BC7225700B45A4C /* Magnetarr Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		400B73832BC7225700B45A4C /* Magnetarr Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 400B73822BC7225700B45A4C /* Magnetarr Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		400B73892BC7225700B45A4C /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 400B734D2BC7225200B45A4C /* Base */; };
+		400B738A2BC7225700B45A4C /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 400B734D2BC7225200B45A4C /* Base */; };
+		400B738B2BC7225700B45A4C /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 400B734E2BC7225200B45A4C /* Icon.png */; };
+		400B738C2BC7225700B45A4C /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 400B734E2BC7225200B45A4C /* Icon.png */; };
+		400B738D2BC7225700B45A4C /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 400B734F2BC7225200B45A4C /* Style.css */; };
+		400B738E2BC7225700B45A4C /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 400B734F2BC7225200B45A4C /* Style.css */; };
+		400B738F2BC7225700B45A4C /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = 400B73502BC7225200B45A4C /* Script.js */; };
+		400B73902BC7225700B45A4C /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = 400B73502BC7225200B45A4C /* Script.js */; };
+		400B73912BC7225700B45A4C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400B73512BC7225200B45A4C /* ViewController.swift */; };
+		400B73922BC7225700B45A4C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400B73512BC7225200B45A4C /* ViewController.swift */; };
+		400B73932BC7225700B45A4C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 400B73522BC7225700B45A4C /* Assets.xcassets */; };
+		400B73942BC7225700B45A4C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 400B73522BC7225700B45A4C /* Assets.xcassets */; };
+		400B73952BC7225700B45A4C /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400B73542BC7225700B45A4C /* SafariWebExtensionHandler.swift */; };
+		400B73962BC7225700B45A4C /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400B73542BC7225700B45A4C /* SafariWebExtensionHandler.swift */; };
+		400B73AB2BC7225800B45A4C /* img in Resources */ = {isa = PBXBuildFile; fileRef = 400B73A82BC7225800B45A4C /* img */; };
+		400B73AC2BC7225800B45A4C /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 400B73A92BC7225800B45A4C /* manifest.json */; };
+		400B73AD2BC7225800B45A4C /* src in Resources */ = {isa = PBXBuildFile; fileRef = 400B73AA2BC7225800B45A4C /* src */; };
+		400B73AE2BC7225800B45A4C /* img in Resources */ = {isa = PBXBuildFile; fileRef = 400B73A82BC7225800B45A4C /* img */; };
+		400B73AF2BC7225800B45A4C /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 400B73A92BC7225800B45A4C /* manifest.json */; };
+		400B73B02BC7225800B45A4C /* src in Resources */ = {isa = PBXBuildFile; fileRef = 400B73AA2BC7225800B45A4C /* src */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		400B737A2BC7225700B45A4C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 400B73462BC7225100B45A4C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 400B73772BC7225700B45A4C;
+			remoteInfo = "Magnetarr Extension (iOS)";
+		};
+		400B73842BC7225700B45A4C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 400B73462BC7225100B45A4C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 400B73812BC7225700B45A4C;
+			remoteInfo = "Magnetarr Extension (macOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		400B739C2BC7225700B45A4C /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				400B73792BC7225700B45A4C /* Magnetarr Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		400B73A32BC7225700B45A4C /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				400B73832BC7225700B45A4C /* Magnetarr Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		400B734D2BC7225200B45A4C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = ../Base.lproj/Main.html; sourceTree = "<group>"; };
+		400B734E2BC7225200B45A4C /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		400B734F2BC7225200B45A4C /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
+		400B73502BC7225200B45A4C /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
+		400B73512BC7225200B45A4C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		400B73522BC7225700B45A4C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		400B73542BC7225700B45A4C /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		400B73592BC7225700B45A4C /* Magnetarr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Magnetarr.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		400B735C2BC7225700B45A4C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		400B735E2BC7225700B45A4C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		400B73612BC7225700B45A4C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		400B73642BC7225700B45A4C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		400B73662BC7225700B45A4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		400B736B2BC7225700B45A4C /* Magnetarr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Magnetarr.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		400B736D2BC7225700B45A4C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		400B73702BC7225700B45A4C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		400B73722BC7225700B45A4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		400B73732BC7225700B45A4C /* Magnetarr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Magnetarr.entitlements; sourceTree = "<group>"; };
+		400B73782BC7225700B45A4C /* Magnetarr Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Magnetarr Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		400B737D2BC7225700B45A4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		400B73822BC7225700B45A4C /* Magnetarr Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Magnetarr Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		400B73872BC7225700B45A4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		400B73882BC7225700B45A4C /* Magnetarr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Magnetarr.entitlements; sourceTree = "<group>"; };
+		400B73A82BC7225800B45A4C /* img */ = {isa = PBXFileReference; lastKnownFileType = folder; name = img; path = ../../release/img; sourceTree = "<group>"; };
+		400B73A92BC7225800B45A4C /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../release/manifest.json; sourceTree = "<group>"; };
+		400B73AA2BC7225800B45A4C /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../../release/src; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		400B73562BC7225700B45A4C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		400B73682BC7225700B45A4C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		400B73752BC7225700B45A4C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		400B737F2BC7225700B45A4C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		400B73452BC7225100B45A4C = {
+			isa = PBXGroup;
+			children = (
+				400B734A2BC7225200B45A4C /* Shared (App) */,
+				400B73532BC7225700B45A4C /* Shared (Extension) */,
+				400B735B2BC7225700B45A4C /* iOS (App) */,
+				400B736C2BC7225700B45A4C /* macOS (App) */,
+				400B737C2BC7225700B45A4C /* iOS (Extension) */,
+				400B73862BC7225700B45A4C /* macOS (Extension) */,
+				400B735A2BC7225700B45A4C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		400B734A2BC7225200B45A4C /* Shared (App) */ = {
+			isa = PBXGroup;
+			children = (
+				400B73512BC7225200B45A4C /* ViewController.swift */,
+				400B73522BC7225700B45A4C /* Assets.xcassets */,
+				400B734B2BC7225200B45A4C /* Resources */,
+			);
+			path = "Shared (App)";
+			sourceTree = "<group>";
+		};
+		400B734B2BC7225200B45A4C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				400B734C2BC7225200B45A4C /* Main.html */,
+				400B734E2BC7225200B45A4C /* Icon.png */,
+				400B734F2BC7225200B45A4C /* Style.css */,
+				400B73502BC7225200B45A4C /* Script.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		400B73532BC7225700B45A4C /* Shared (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				400B73A72BC7225800B45A4C /* Resources */,
+				400B73542BC7225700B45A4C /* SafariWebExtensionHandler.swift */,
+			);
+			path = "Shared (Extension)";
+			sourceTree = "<group>";
+		};
+		400B735A2BC7225700B45A4C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				400B73592BC7225700B45A4C /* Magnetarr.app */,
+				400B736B2BC7225700B45A4C /* Magnetarr.app */,
+				400B73782BC7225700B45A4C /* Magnetarr Extension.appex */,
+				400B73822BC7225700B45A4C /* Magnetarr Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		400B735B2BC7225700B45A4C /* iOS (App) */ = {
+			isa = PBXGroup;
+			children = (
+				400B735C2BC7225700B45A4C /* AppDelegate.swift */,
+				400B735E2BC7225700B45A4C /* SceneDelegate.swift */,
+				400B73602BC7225700B45A4C /* LaunchScreen.storyboard */,
+				400B73632BC7225700B45A4C /* Main.storyboard */,
+				400B73662BC7225700B45A4C /* Info.plist */,
+			);
+			path = "iOS (App)";
+			sourceTree = "<group>";
+		};
+		400B736C2BC7225700B45A4C /* macOS (App) */ = {
+			isa = PBXGroup;
+			children = (
+				400B736D2BC7225700B45A4C /* AppDelegate.swift */,
+				400B736F2BC7225700B45A4C /* Main.storyboard */,
+				400B73722BC7225700B45A4C /* Info.plist */,
+				400B73732BC7225700B45A4C /* Magnetarr.entitlements */,
+			);
+			path = "macOS (App)";
+			sourceTree = "<group>";
+		};
+		400B737C2BC7225700B45A4C /* iOS (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				400B737D2BC7225700B45A4C /* Info.plist */,
+			);
+			path = "iOS (Extension)";
+			sourceTree = "<group>";
+		};
+		400B73862BC7225700B45A4C /* macOS (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				400B73872BC7225700B45A4C /* Info.plist */,
+				400B73882BC7225700B45A4C /* Magnetarr.entitlements */,
+			);
+			path = "macOS (Extension)";
+			sourceTree = "<group>";
+		};
+		400B73A72BC7225800B45A4C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				400B73A82BC7225800B45A4C /* img */,
+				400B73A92BC7225800B45A4C /* manifest.json */,
+				400B73AA2BC7225800B45A4C /* src */,
+			);
+			name = Resources;
+			path = "Shared (Extension)";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		400B73582BC7225700B45A4C /* Magnetarr (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 400B739D2BC7225700B45A4C /* Build configuration list for PBXNativeTarget "Magnetarr (iOS)" */;
+			buildPhases = (
+				400B73552BC7225700B45A4C /* Sources */,
+				400B73562BC7225700B45A4C /* Frameworks */,
+				400B73572BC7225700B45A4C /* Resources */,
+				400B739C2BC7225700B45A4C /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				400B737B2BC7225700B45A4C /* PBXTargetDependency */,
+			);
+			name = "Magnetarr (iOS)";
+			productName = "Magnetarr (iOS)";
+			productReference = 400B73592BC7225700B45A4C /* Magnetarr.app */;
+			productType = "com.apple.product-type.application";
+		};
+		400B736A2BC7225700B45A4C /* Magnetarr (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 400B73A42BC7225700B45A4C /* Build configuration list for PBXNativeTarget "Magnetarr (macOS)" */;
+			buildPhases = (
+				400B73672BC7225700B45A4C /* Sources */,
+				400B73682BC7225700B45A4C /* Frameworks */,
+				400B73692BC7225700B45A4C /* Resources */,
+				400B73A32BC7225700B45A4C /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				400B73852BC7225700B45A4C /* PBXTargetDependency */,
+			);
+			name = "Magnetarr (macOS)";
+			productName = "Magnetarr (macOS)";
+			productReference = 400B736B2BC7225700B45A4C /* Magnetarr.app */;
+			productType = "com.apple.product-type.application";
+		};
+		400B73772BC7225700B45A4C /* Magnetarr Extension (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 400B73992BC7225700B45A4C /* Build configuration list for PBXNativeTarget "Magnetarr Extension (iOS)" */;
+			buildPhases = (
+				400B73742BC7225700B45A4C /* Sources */,
+				400B73752BC7225700B45A4C /* Frameworks */,
+				400B73762BC7225700B45A4C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Magnetarr Extension (iOS)";
+			productName = "Magnetarr Extension (iOS)";
+			productReference = 400B73782BC7225700B45A4C /* Magnetarr Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		400B73812BC7225700B45A4C /* Magnetarr Extension (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 400B73A02BC7225700B45A4C /* Build configuration list for PBXNativeTarget "Magnetarr Extension (macOS)" */;
+			buildPhases = (
+				400B737E2BC7225700B45A4C /* Sources */,
+				400B737F2BC7225700B45A4C /* Frameworks */,
+				400B73802BC7225700B45A4C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Magnetarr Extension (macOS)";
+			productName = "Magnetarr Extension (macOS)";
+			productReference = 400B73822BC7225700B45A4C /* Magnetarr Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		400B73462BC7225100B45A4C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1530;
+				LastUpgradeCheck = 1530;
+				TargetAttributes = {
+					400B73582BC7225700B45A4C = {
+						CreatedOnToolsVersion = 15.3;
+					};
+					400B736A2BC7225700B45A4C = {
+						CreatedOnToolsVersion = 15.3;
+					};
+					400B73772BC7225700B45A4C = {
+						CreatedOnToolsVersion = 15.3;
+					};
+					400B73812BC7225700B45A4C = {
+						CreatedOnToolsVersion = 15.3;
+					};
+				};
+			};
+			buildConfigurationList = 400B73492BC7225100B45A4C /* Build configuration list for PBXProject "Magnetarr" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 400B73452BC7225100B45A4C;
+			productRefGroup = 400B735A2BC7225700B45A4C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				400B73582BC7225700B45A4C /* Magnetarr (iOS) */,
+				400B736A2BC7225700B45A4C /* Magnetarr (macOS) */,
+				400B73772BC7225700B45A4C /* Magnetarr Extension (iOS) */,
+				400B73812BC7225700B45A4C /* Magnetarr Extension (macOS) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		400B73572BC7225700B45A4C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				400B738B2BC7225700B45A4C /* Icon.png in Resources */,
+				400B73622BC7225700B45A4C /* Base in Resources */,
+				400B73892BC7225700B45A4C /* Base in Resources */,
+				400B738F2BC7225700B45A4C /* Script.js in Resources */,
+				400B73932BC7225700B45A4C /* Assets.xcassets in Resources */,
+				400B73652BC7225700B45A4C /* Base in Resources */,
+				400B738D2BC7225700B45A4C /* Style.css in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		400B73692BC7225700B45A4C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				400B738C2BC7225700B45A4C /* Icon.png in Resources */,
+				400B738E2BC7225700B45A4C /* Style.css in Resources */,
+				400B73712BC7225700B45A4C /* Base in Resources */,
+				400B73902BC7225700B45A4C /* Script.js in Resources */,
+				400B73942BC7225700B45A4C /* Assets.xcassets in Resources */,
+				400B738A2BC7225700B45A4C /* Base in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		400B73762BC7225700B45A4C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				400B73B02BC7225800B45A4C /* src in Resources */,
+				400B73AF2BC7225800B45A4C /* manifest.json in Resources */,
+				400B73AE2BC7225800B45A4C /* img in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		400B73802BC7225700B45A4C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				400B73AD2BC7225800B45A4C /* src in Resources */,
+				400B73AC2BC7225800B45A4C /* manifest.json in Resources */,
+				400B73AB2BC7225800B45A4C /* img in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		400B73552BC7225700B45A4C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				400B73912BC7225700B45A4C /* ViewController.swift in Sources */,
+				400B735D2BC7225700B45A4C /* AppDelegate.swift in Sources */,
+				400B735F2BC7225700B45A4C /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		400B73672BC7225700B45A4C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				400B73922BC7225700B45A4C /* ViewController.swift in Sources */,
+				400B736E2BC7225700B45A4C /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		400B73742BC7225700B45A4C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				400B73952BC7225700B45A4C /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		400B737E2BC7225700B45A4C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				400B73962BC7225700B45A4C /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		400B737B2BC7225700B45A4C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 400B73772BC7225700B45A4C /* Magnetarr Extension (iOS) */;
+			targetProxy = 400B737A2BC7225700B45A4C /* PBXContainerItemProxy */;
+		};
+		400B73852BC7225700B45A4C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 400B73812BC7225700B45A4C /* Magnetarr Extension (macOS) */;
+			targetProxy = 400B73842BC7225700B45A4C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		400B734C2BC7225200B45A4C /* Main.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				400B734D2BC7225200B45A4C /* Base */,
+			);
+			name = Main.html;
+			sourceTree = "<group>";
+		};
+		400B73602BC7225700B45A4C /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				400B73612BC7225700B45A4C /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		400B73632BC7225700B45A4C /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				400B73642BC7225700B45A4C /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		400B736F2BC7225700B45A4C /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				400B73702BC7225700B45A4C /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		400B73972BC7225700B45A4C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		400B73982BC7225700B45A4C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		400B739A2BC7225700B45A4C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Magnetarr Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourCompany.Magnetarr.Extension;
+				PRODUCT_NAME = "Magnetarr Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		400B739B2BC7225700B45A4C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Magnetarr Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourCompany.Magnetarr.Extension;
+				PRODUCT_NAME = "Magnetarr Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		400B739E2BC7225700B45A4C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Magnetarr;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourCompany.Magnetarr;
+				PRODUCT_NAME = Magnetarr;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		400B739F2BC7225700B45A4C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Magnetarr;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourCompany.Magnetarr;
+				PRODUCT_NAME = Magnetarr;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		400B73A12BC7225700B45A4C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "macOS (Extension)/Magnetarr.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Magnetarr Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourCompany.Magnetarr.Extension;
+				PRODUCT_NAME = "Magnetarr Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		400B73A22BC7225700B45A4C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "macOS (Extension)/Magnetarr.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Magnetarr Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourCompany.Magnetarr.Extension;
+				PRODUCT_NAME = "Magnetarr Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		400B73A52BC7225700B45A4C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "macOS (App)/Magnetarr.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Magnetarr;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourCompany.Magnetarr;
+				PRODUCT_NAME = Magnetarr;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		400B73A62BC7225700B45A4C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "macOS (App)/Magnetarr.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Magnetarr;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourCompany.Magnetarr;
+				PRODUCT_NAME = Magnetarr;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		400B73492BC7225100B45A4C /* Build configuration list for PBXProject "Magnetarr" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				400B73972BC7225700B45A4C /* Debug */,
+				400B73982BC7225700B45A4C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		400B73992BC7225700B45A4C /* Build configuration list for PBXNativeTarget "Magnetarr Extension (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				400B739A2BC7225700B45A4C /* Debug */,
+				400B739B2BC7225700B45A4C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		400B739D2BC7225700B45A4C /* Build configuration list for PBXNativeTarget "Magnetarr (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				400B739E2BC7225700B45A4C /* Debug */,
+				400B739F2BC7225700B45A4C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		400B73A02BC7225700B45A4C /* Build configuration list for PBXNativeTarget "Magnetarr Extension (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				400B73A12BC7225700B45A4C /* Debug */,
+				400B73A22BC7225700B45A4C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		400B73A42BC7225700B45A4C /* Build configuration list for PBXNativeTarget "Magnetarr (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				400B73A52BC7225700B45A4C /* Debug */,
+				400B73A62BC7225700B45A4C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 400B73462BC7225100B45A4C /* Project object */;
+}
