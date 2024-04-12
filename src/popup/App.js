@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as browser from 'webextension-polyfill';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -41,13 +42,13 @@ const borderStyles = {
 };
 
 async function getCurrentTabUrl() {
-  const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+  const tabs = await browser.tabs.query({ active: true, lastFocusedWindow: true });
   return tabs[0].url;
 }
 
 function openUrl(item) {
   const url = item.server.getItemUrl(item);
-  chrome.tabs.create({url: url });
+  browser.tabs.create({url: url });
 }
 
 function OptionMenu({tip, name, label, values, defaultval}) {
@@ -211,7 +212,7 @@ function ItemHeader({item}) {
         </Box>
       )}
       <Tooltip title="Open magnetarr settings">
-        <IconButton aria-label="settings" onClick={() => {chrome.runtime.openOptionsPage()}}>
+        <IconButton aria-label="settings" onClick={() => {browser.runtime.openOptionsPage()}}>
           <SettingsIcon />
         </IconButton>
       </Tooltip>

@@ -1,16 +1,17 @@
 "use strict";
+import * as browser from 'webextension-polyfill';
 import {getProviderFromUrl} from "../lib/provider";
 
 function handlePageAction(tabInfo) {
-  chrome.tabs.query({active:true,currentWindow:true},function(tabArray){
+  browser.tabs.query({active:true,currentWindow:true}).then((tabArray) => {
     if ((tabArray[0])&&(getProviderFromUrl(tabArray[0].url))) {
-        chrome.action.enable(tabInfo.tabId);
+      browser.action.enable(tabInfo.tabId);
     } else {
-      chrome.action.disable(tabInfo.tabId);
+      browser.action.disable(tabInfo.tabId);
     }
-  });
+  });    
 }
 
 // Register our page parser when a tab gets activated and when a page gets loaded
-chrome.tabs.onActivated.addListener(handlePageAction);
-chrome.webNavigation.onCommitted.addListener(handlePageAction);
+browser.tabs.onActivated.addListener(handlePageAction);
+browser.webNavigation.onCommitted.addListener(handlePageAction);

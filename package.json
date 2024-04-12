@@ -4,7 +4,8 @@
   "private": true,
   "devDependencies": {
     "@types/chrome": "^0.0.263",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "web-ext": "^7.11.0"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -14,7 +15,8 @@
     "parcel": "^2.12.0",
     "parcel-plugin-static-files-copy": "^2.6.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "webextension-polyfill": "^0.10.0"
   },
   "targets": {
     "background": {
@@ -38,8 +40,10 @@
     "build": "parcel build",
     "dev": "nodemon --exec npm run build",
     "clean": "rm -rf release/src/*; rm -rf .parcel-cache; rm -f magnetarr.zip",
-    "pack": "(cd release; zip -r ../magnetarr.$(cat manifest.json | jq -r '.version').zip ./* -x './release/img/svg/*' -x '.DS_Store')",
-    "release": "npm run clean; npm run build; npm run pack"
+    "pack-chrome": "(cd release/release-chrome; zip -r ../../dist/magnetarr.$(cat manifest.json | jq -r '.version').chrome.zip ./* -x '.DS_Store')",
+    "pack-firefox": "(cd release; web-ext build -o -a ../dist -i svg -i release-chrome)",
+    "pack": "npm run pack-chrome && npm run pack-firefox",
+    "release": "npm run clean && npm run build && npm run pack"
   },
   "nodemonConfig": {
     "verbose": true,

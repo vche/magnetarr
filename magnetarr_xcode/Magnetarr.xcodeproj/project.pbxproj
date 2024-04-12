@@ -104,7 +104,7 @@
 		400B73872BC7225700B45A4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		400B73882BC7225700B45A4C /* Magnetarr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Magnetarr.entitlements; sourceTree = "<group>"; };
 		400B73A82BC7225800B45A4C /* img */ = {isa = PBXFileReference; lastKnownFileType = folder; name = img; path = ../../release/img; sourceTree = "<group>"; };
-		400B73A92BC7225800B45A4C /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../release/manifest.json; sourceTree = "<group>"; };
+		400B73A92BC7225800B45A4C /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = "../../release/release-chrome/manifest.json"; sourceTree = "<group>"; };
 		400B73AA2BC7225800B45A4C /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ../../release/src; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 

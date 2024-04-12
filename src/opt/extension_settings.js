@@ -73,8 +73,9 @@ function CliArrSettings( { itemtype } ) {
   // Validate the config and store it
   async function validateConfig(event) {
     try {
-      // Save config in server object
-      server.host = event.target.id_host.value;
+      // Save config in server object (remove trailing / of host url if needed)
+      const host = event.target.id_host.value;
+      server.host = (host.charAt( host.length-1 ) == "/")?host.slice(0, -1):host;
       server.port = event.target.id_port.value;
       server.apikey = event.target.id_apikey.value;
       server.user = event.target.id_user.value;

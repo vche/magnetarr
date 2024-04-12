@@ -219,7 +219,7 @@ export class Imdb extends Provider {
         return (imdbid) ? imdbid[0].slice(1) : "";
     }
 
-    urlMatch(url) { return url.match(/\/\/www\.imdb.com\/.+\/tt\d{7,8}\//)?true:false; }
+    urlMatch(url) { return url.match(/\/\/(m|www)\.imdb.com\/.+\/tt\d{7,8}\//)?true:false; }
 
     async itemFromUrl(url) {
         const imdbid = this._imdbIdFromUrl(url);
@@ -257,7 +257,6 @@ export class Imdb extends Provider {
         //             $('#optLgConfig').removeClass("hidden");
         //             pulsarr.info("Unable to find series. If this is a movie, please configure a Radarr server.");
         //         } else {
-        //             chrome.runtime.openOptionsPage();
         //         }
         //     }).catch(function(response) {
         //         pulsarr.init(response);

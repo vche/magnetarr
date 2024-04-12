@@ -6,6 +6,12 @@
   "description": "Add movies/series to Radarr/Sonarr from IMDB and other sites",
   "version": "1.1.0",
 
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "magnetarr@vivc.org"
+    }
+  },
+  
   "icons": {
     "16": "img/magnetarr/magnetarr-16.png",
     "32": "img/magnetarr/magnetarr-32.png",
@@ -14,7 +20,7 @@
   },
 
   "background": {
-    "service_worker": "src/background/background.js"
+    "scripts": ["src/background/background.js"]
   },
 
   "action": {
@@ -25,10 +31,7 @@
       "128": "img/magnetarr/magnetarr-128.png"
       },
     "default_popup": "src/popup/popup.html",
-    "default_title": "Add to Radarr",
-    "default_width": 800,
-    "default_height": 1200
-
+    "default_title": "Add to Radarr"
   },
 
   "options_ui": {

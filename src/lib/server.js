@@ -1,4 +1,4 @@
-import { lookupService } from "dns";
+import * as browser from 'webextension-polyfill';
 
 export const ItemTypes = {
     Unknown: null,
@@ -93,7 +93,7 @@ export class Server {
     async loadConfig(loadProfiles=false, loadFolders=false) {
         const wanted = {}
         wanted[this.name] = this.getConfig()
-        const items = await chrome.storage.sync.get(wanted);
+        const items = await browser.storage.sync.get(wanted);
 
         this.setConfig(items[this.name]);
         console.debug(`Loaded ${this.name} config: ${JSON.stringify(this.getConfig())}`);
@@ -109,7 +109,7 @@ export class Server {
         const wanted = {}
         wanted[this.name] = this.getConfig()
         console.debug(`Saved ${this.name} config: ${JSON.stringify(this.getConfig())}`);
-        await chrome.storage.sync.set(wanted);
+        await browser.storage.sync.set(wanted);
     }
 
     // Build the server url
@@ -153,7 +153,7 @@ export class Server {
 
             if (res.status >= 400) throw new Error(`${res.status} (${res.statusText})`)
             data = await res.json();
-            console.debug(`Request to ${url}: ${res.status}`); console.log(data);
+            // console.debug(`Request to ${url}: ${res.status}`); console.log(data);
 
             return data;
         } catch (error) {

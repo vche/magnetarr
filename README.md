@@ -2,11 +2,16 @@
 
 Browser extension for adding movies to [Radarr](https://radarr.video) or Series' to [Sonarr](https://sonarr.tv) while browsing imdb.com, thetvdb.com, themoviedb.com, inspired by [Pulsarr](https://github.com/roboticsound/Pulsarr), completely rewritten in react.
 - [Chrome](https://chrome.google.com/webstore/detail/pulsarr/dcildkalkckjjdfpgagmnbbfooogopkd)
+- [Firefox]()
+- iOS/OSX Xcode project provided for anyone to build and run locally (follow instructions [here](https://developer.apple.com/documentation/safariservices/safari_web_extensions/running_your_safari_web_extension)), but the extension is not distributed on the app store (i'm not paying the enrollment just for this:P)
 
 ![](release/img/svg/screen2.jpg)
 
 ## TODO
-- Multi browser support (Firefox/Safari/ios)
+- Find how to cleanup manifest warnings for both chrome and firefox 
+  - manifest generation ? 2 static manifets ?
+- update package build to remove svg
+- upload to firefox store
 
 ## Development
 
