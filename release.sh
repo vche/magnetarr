@@ -10,14 +10,14 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "--> Pushing commit"
-igit up -m "Update release to $1"
+igit up -m "Update release to $version"
 if [ $? -ne 0 ]; then 
   echo "The command failed with exit status $?" 
   exit 1 
 fi
 
-echo "--> Generating github release v$1"
-gh release create v$1 --generate-notes
+echo "--> Generating github release v$version"
+gh release create v$version --generate-notes
 if [ $? -ne 0 ]; then 
   echo "The command failed with exit status $?" 
   exit 1 
