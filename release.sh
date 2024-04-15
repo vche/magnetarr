@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 version=$(cat package.json |jq -r '.version')
 echo "--> Updating version to $version"
+npm exec -c "json -I -f release/manifest.json -e 'this.version=\"$version\"'"
+npm exec -c "json -I -f release/release-chrome/manifest.json -e 'this.version=\"$version\"'"
 
 echo "--> Building packages"
 npm run release

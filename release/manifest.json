@@ -1,57 +1,49 @@
 {
   "manifest_version": 3,
-
   "name": "Magnetarr",
   "author": "Vivien Chene",
   "description": "Add movies/series to Radarr/Sonarr from IMDB and other sites",
   "version": "1.1.0",
-
   "browser_specific_settings": {
     "gecko": {
       "id": "magnetarr@vivc.org"
     }
   },
-  
   "icons": {
     "16": "img/magnetarr/magnetarr-16.png",
     "32": "img/magnetarr/magnetarr-32.png",
     "48": "img/magnetarr/magnetarr-48.png",
     "128": "img/magnetarr/magnetarr-128.png"
   },
-
   "background": {
-    "scripts": ["src/background/background.js"]
+    "scripts": [
+      "src/background/background.js"
+    ]
   },
-
   "action": {
     "default_icon": {
       "16": "img/magnetarr/magnetarr-16.png",
       "32": "img/magnetarr/magnetarr-32.png",
       "48": "img/magnetarr/magnetarr-48.png",
       "128": "img/magnetarr/magnetarr-128.png"
-      },
+    },
     "default_popup": "src/popup/popup.html",
     "default_title": "Add to Radarr"
   },
-
   "options_ui": {
     "page": "src/opt/options.html",
     "open_in_tab": false
   },
-
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self' "
   },
-
   "permissions": [
     "activeTab",
     "tabs",
     "storage",
     "webNavigation"
   ],
-
   "host_permissions": [
     "<all_urls>"
   ]
-
 }
