@@ -40,7 +40,7 @@
     "build": "parcel build",
     "dev": "nodemon --exec npm run build",
     "clean": "rm -rf release/src/*; rm -rf .parcel-cache; rm -f magnetarr.zip",
-    "pack-chrome": "(cd release/release-chrome; zip -r ../../dist/magnetarr.$(cat manifest.json | jq -r '.version').chrome.zip ./* -x '.DS_Store')",
+    "pack-chrome": "(cd release/release-chrome; zip -r ../../dist/magnetarr-$(cat manifest.json | jq -r '.version').chrome.zip ./* -x '.DS_Store')",
     "pack-firefox": "(cd release; web-ext build -o -a ../dist -i svg -i release-chrome)",
     "pack": "npm run pack-chrome && npm run pack-firefox",
     "release": "npm run clean && npm run build && npm run pack"
