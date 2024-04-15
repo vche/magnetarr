@@ -7,11 +7,6 @@ Browser extension for adding movies to [Radarr](https://radarr.video) or Series'
 
 ![](release/img/svg/screen2.jpg)
 
-## TODO
-- Find how to cleanup manifest warnings for both chrome and firefox 
-  - manifest generation ? 2 static manifets ?
-- update package build to remove svg
-- upload to firefox store
 
 ## Development
 
