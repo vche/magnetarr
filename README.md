@@ -1,6 +1,6 @@
 # Magnetarr
 
-Browser extension for adding movies to [Radarr](https://radarr.video) or Series' to [Sonarr](https://sonarr.tv) while browsing imdb.com, thetvdb.com, themoviedb.com, inspired by [Pulsarr](https://github.com/roboticsound/Pulsarr), completely rewritten in react.
+Browser extension for adding movies to [Radarr](https://radarr.video) or Series' to [Sonarr](https://sonarr.tv) while browsing [imdb.com](https://www.imdb.com), [thetvdb.com](https://www.thetvdb.com/), [themoviedb.org](https://www.themoviedb.org/), inspired by [Pulsarr](https://github.com/roboticsound/Pulsarr), completely rewritten in react.
 - [Chrome](https://chromewebstore.google.com/detail/magnetarr/makjonablkcafdpkhfllblcmccgaahil)
 - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/magnetarr/)
 - iOS/OSX Xcode project provided for anyone to build and run locally (follow instructions [here](https://developer.apple.com/documentation/safariservices/safari_web_extensions/running_your_safari_web_extension)), but the extension is not distributed on the app store (i'm not paying the enrollment just for this:P)
