@@ -1,23 +1,23 @@
 {
   "name": "magnetarr",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "devDependencies": {
-    "@types/chrome": "^0.0.263",
+    "@types/chrome": "^0.2.9",
     "json": "^11.0.0",
-    "nodemon": "^3.1.0",
-    "web-ext": "^7.11.0"
+    "nodemon": "^3.1.14",
+    "web-ext": "^10.6.0"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.0",
-    "@mui/icons-material": "^5.15.13",
-    "@mui/material": "^5.15.13",
-    "parcel": "^2.12.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.4.0",
+    "@mui/material": "^9.4.0",
+    "parcel": "^2.16.4",
     "parcel-plugin-static-files-copy": "^2.6.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "webextension-polyfill": "^0.10.0"
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "webextension-polyfill": "^0.12.0"
   },
   "targets": {
     "background": {

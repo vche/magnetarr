@@ -43,6 +43,10 @@ Start a watch daemon that will rebuild the extension upon changes in the source 
 npm run dev
 ```
 
+### Build and push release
+```bash
+./release.sh
+```
 
 ## References
 - [Pulsarr](https://github.com/roboticsound/Pulsarr)

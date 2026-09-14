@@ -11,7 +11,7 @@ import { ItemTypes, getServerForType } from '../lib/server';
 import './extension_settings.css';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -136,7 +136,7 @@ function CliArrSettings( { itemtype } ) {
                 <TextField id="id_host"
                     label="Host"
                     variant="outlined"
-                    margin="normal" 
+                    margin="normal"
                     fullWidth
                     autoComplete="host"
                     error={invalidHost?true:false}
@@ -144,10 +144,10 @@ function CliArrSettings( { itemtype } ) {
                     defaultValue={server.host}
                     size="small"
                 />
-                <TextField id="id_port" 
+                <TextField id="id_port"
                     label="Port"
                     variant="outlined"
-                    margin="normal" 
+                    margin="normal"
                     fullWidth
                     autoComplete="port"
                     error={invalidPort?true:false}
@@ -155,10 +155,10 @@ function CliArrSettings( { itemtype } ) {
                     defaultValue={server.port}
                     size="small"
                 />
-                <TextField id="id_apikey" 
+                <TextField id="id_apikey"
                     label="API key"
                     variant="outlined"
-                    margin="normal" 
+                    margin="normal"
                     fullWidth
                     autoComplete="key"
                     error={invalidKey?true:false}
@@ -171,19 +171,19 @@ function CliArrSettings( { itemtype } ) {
                   Leave empty if no authentication
                 </Typography>
                 <Stack direction="row" spacing={1} sx={{ my: '10px' }}>
-                  <TextField id="id_user" 
+                  <TextField id="id_user"
                       label="User"
                       variant="outlined"
-                      margin="normal" 
+                      margin="normal"
                       fullWidth
                       autoComplete="username"
                       defaultValue={server.user}
                       size="small"
                   />
-                  <TextField id="id_pass" 
+                  <TextField id="id_pass"
                       label="Password"
                       variant="outlined"
-                      margin="normal" 
+                      margin="normal"
                       type="password"
                       fullWidth
                       autoComplete="current-password"
