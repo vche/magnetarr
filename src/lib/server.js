@@ -7,10 +7,10 @@ export const ItemTypes = {
 }
 
 export class Item {
-    constructor(itemtype=ItemTypes.Unknown, imdbid=null, tvdbid=null, itemslug = null, exists = null, properties = {})
+    constructor(itemtype=ItemTypes.Unknown, imdbid=null, tvdbid=null, itemslug = null, exists = null, properties = {}, provider=null, server=null)
     {
-        this.provider = null;
-        this.server = null;
+        this.provider = provider;
+        this.server = server;
 
         this.itemtype = itemtype;
         this.itemslug = itemslug;
@@ -147,7 +147,7 @@ export class Server {
             if ((data != null) && (typeof data !== "string")) {
                 body = JSON.stringify(data);
             }
-        
+
             console.debug("Request " + method + " url: " + url + " headers: " + JSON.stringify(headers) + " body: " + body);
             const res = await fetch(url, { method: method, body: body, headers: headers });
 
@@ -166,33 +166,45 @@ export class Server {
         return `/img/${this.name}/${this.name}-${size}.png`;
     }
 
-    // Check if an item exists based on its id and/or slyf, returns its slug or null
-    async itemExists(item) {
-        const response = await this.getItemList();
-        for (var i = 0; i < response.length; i++) {
-            const elt = response[i];
+    // Check if an item exists based on its id and/or slug, returns its slug or null
+    async itemExists(item, itemlist=null) {
+        if (itemlist == null) itemlist = await this.getItemList();
+        for (var i = 0; i < itemlist.length; i++) {
+            const elt = itemlist[i];
             if ((item && this.checkItemId(item, elt)) || (item.itemslug && item.itemslug === elt.titleSlug)) {
-                return elt.titleSlug;
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     // Look for an item based on info provided (id and/or slug), fetch and fill other info (exists, properties)
     async getItemInfo(item) {
-        // Query for both existence and item info
-        const [slug, results] = await Promise.all([this.itemExists(item), this.lookupItem(item)]);
+        var itemsFound = [];
+        const itemlist = await this.getItemList();
 
-        // Consolidate results
-        item.itemslug = slug;
-        item.exists = (item.itemslug)?true:false;
-        if (results && results.length == 0) { item.properties = null; }
-        if (results.length > 0) {
-            item.properties = results[0];
-            if (results.length > 1) console.log("Warning, several results found for this item");
+        // Query for item info
+        const results = await this.lookupItem(item);
+
+        // Create a result list
+        for (var i = 0; i < results.length; i++) {
+            var newitem = new Item(
+                item.itemtype,
+                results[i].imdbId,
+                results[i].tvdbId,
+                results[i].titleSlug,
+                null,
+                results[i],
+                item.provider,
+                item.server
+            );
+            newitem.exists = await this.itemExists(newitem, itemlist);
+            itemsFound.push(newitem);
         }
 
-        return item
+        console.log("Matches found: " + itemsFound.length)
+        console.log(itemsFound)
+        return itemsFound;
     }
 
     async getProfiles() {
@@ -203,7 +215,7 @@ export class Server {
     async getFolders() {
         const result = await this.get(this.getFolderUrlPath());
         const folders = []
-        for (let i = 0; i < result.length; i++) { 
+        for (let i = 0; i < result.length; i++) {
             folders.push({"name": result[i].path, "id": result[i].path})
         }
         return folders;
@@ -231,7 +243,7 @@ export class Radarr extends Server {
 	constructor () {
         super("radarr", 7878)
     }
-    
+
     getItemUrl(item) { return this.getUrl() + "/movie" + ((item) ? `/${item.itemslug}` : "") }
     getItemPath(item=null) { return "/api/v3/movie" + ((item) ? `/${item.itemslug}` : ""); }
     getProfileUrlPath() { return "/api/v3/qualityProfile";}
@@ -242,7 +254,7 @@ export class Radarr extends Server {
             {name: "In Cinemas", id: "inCinemas"},
             {name: "Physical/Web", id: "released"},
             {name: "Pre DB/Web", id: "preDB"}
-          ];    
+          ];
     }
     buildItemDict(item) {
         return {
@@ -252,7 +264,7 @@ export class Radarr extends Server {
             "titleSlug": item.properties.titleSlug,
             "images": item.properties.images,
             "tmdbid": item.properties.tmdbId,
-            "imdbId": item.properties.imdbid,
+            "imdbId": item.properties.imdbId,
             "rootFolderPath": item.server.folder,
             "monitored": item.server.monitored,
             "minimumAvailability": item.server.auxinfo,
@@ -261,12 +273,16 @@ export class Radarr extends Server {
             }
         };
     }
-    async lookupItem(item) {
-        // radarr only supports imdb id
-        const term = (item.imdbid) ? "imdb%3A%20" + item.imdbid : null;
-        return await this.get(this.getItemPath() + "/lookup", null, "term=" + term);
+    buildLookupTerm(item) {
+      // Also supports now tmdb as well + apis /lookup/imdb /lookup/tmdb
+        if (item.imdbid) return "imdb%3A%20" + item.imdbid;
+        if (item.tmdbid) return "tmdb%3A%20" + item.tmdbId;
+        if (item.itemslug) return encodeURI(item.itemslug);
+        return null;
     }
-
+    async lookupItem(item) {
+        return await this.get(this.getItemPath() + "/lookup", null, "term=" + this.buildLookupTerm(item));
+    }
 }
 
 export class Sonarr extends Server {
@@ -299,10 +315,15 @@ export class Sonarr extends Server {
             }
         };
     }
+    buildLookupTerm(item) {
+        // Also supports now tmdb as well + apis /lookup/imdb /lookup/tmdb
+        if (item.tvdbid) return "tvdb%3A%20" + item.tvdbid;
+        if (item.imdbid) return "imdb%3A%20" + item.imdbid;
+        if (item.itemslug) return encodeURI(item.itemslug);
+        return null;
+    }
     async lookupItem(item) {
-        (item.itemtype == ItemTypes.Movie)
-        const term = (item.tvdbid) ? "tvdb%3A%20" + item.tvdbid : ((item.imdbid) ? "imdb%3A%20" + item.imdbid : null);
-        return await this.get(this.getItemPath() + "/lookup", null, "term=" + term);
+        return await this.get(this.getItemPath() + "/lookup", null, "term=" + this.buildLookupTerm(item));
     }
 }
 

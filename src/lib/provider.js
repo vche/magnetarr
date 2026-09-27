@@ -47,12 +47,12 @@ class CliApi {
 
         if (legacy && (!this.xmlparser)) return null;
         try {
-            console.debug(`Request to ${url}, hdr: ${headers}`); 
+            console.debug(`Request to ${url}, hdr: ${headers}`);
             const res = await fetch(url, { method: method, headers: headers, body: body });
             if (res.status >= 400) throw new Error(`${res.status} (${res.statusText})`)
             if (legacy) {
                 const xmldata = await res.text();
-                console.debug(`Response: ${xmldata}`); 
+                console.debug(`Response: ${xmldata}`);
 
                 // Extract the serie id from xml data if we got some
                 const xmldoc = this.xmlparser.parseFromString(xmldata, "application/xml");
@@ -65,7 +65,7 @@ class CliApi {
             }
             else {
                 const jsondata = await res.json();
-                console.debug(jsondata); 
+                console.debug(jsondata);
                 return jsondata;
             }
         } catch (error) {
@@ -106,7 +106,7 @@ class Provider {
         this.tvdbapi = tvdbcli?tvdbcli:new TvdbApi();
         this.tmdbapi = tmdbapi?tmdbapi:new TmdbApi();
 	}
-    
+
     // Needs overwriting from child classes
     urlMatch(url) { return false; }
     itemFromUrl(url) { return new Item(); }
@@ -146,7 +146,7 @@ class Provider {
             if (!item) { item = new Item(ItemTypes.Movie, imdbid, null) }
             item.imdbid = imdbid;
         }
-        return item;    
+        return item;
     }
 
     _getRemoteId(remote_ids, source_name) {
@@ -157,7 +157,7 @@ class Provider {
     }
 
     // Get the item ids from slug
-    async itemFromTvdbSlug(type, slug) {        
+    async itemFromTvdbSlug(type, slug) {
         var api_path = null;
         var item = null;
 
@@ -178,14 +178,19 @@ class Provider {
                 if (extended_jsondoc && extended_jsondoc.data.remoteIds) {
                     imdbid = this._getRemoteId(extended_jsondoc.data.remoteIds, "IMDB");
                 }
-                item = new Item(type, imdbid, jsondoc.data.id)                
+                item = new Item(type, imdbid, jsondoc.data.id)
             }
         }
         return item;
     }
 
+    // Build an item from a tmdb slug
+    itemFromTmdbSlug(type, slug) {
+      return new Item(type, null, null, slug);
+    }
+
     // Get the item ids from tmdb id
-    async itemFromTmdbId(type, tmdbid) {        
+    async itemFromTmdbId(type, tmdbid) {
         var api_path = null;
         var item = null;
 
@@ -244,7 +249,7 @@ export class Imdb extends Provider {
         //     let imdbid = pulsarr.extractIMDBID(url);
         //     let tvdbid = await pulsarr.TvdbidFromImdbid(imdbid);
         //     console.log("Extracted imdb id " + imdbid + " tvdbid " + tvdbid);
-    
+
         //     Promise.all([radarr.lookupMovie(imdbid, tvdbid), sonarr.lookupSeries(tvdbid)]).then(function(error) {
         //         if (pulsarrConfig.radarr.isEnabled && pulsarrConfig.sonarr.isEnabled) {
         //             pulsarr.info(error);
@@ -265,7 +270,7 @@ export class Imdb extends Provider {
         //     pulsarr.info(err);
         // }
 
-    //     return true; 
+    //     return true;
     // }
 }
 
@@ -287,8 +292,8 @@ export class Tvdb extends Provider {
         return {"type": null, "slug": null};
     }
 
-    urlMatch(url) { 
-        return url.match(/.*thetvdb.com\/(movies|series)\/.*/)?true:false; 
+    urlMatch(url) {
+        return url.match(/.*thetvdb.com\/(movies|series)\/.*/)?true:false;
     }
 
     async itemFromUrl(url) {
@@ -359,6 +364,75 @@ export class TraktTv extends Provider {
     // }
 }
 
+export class RottenTomatoes extends Provider {
+    static get name() { return "RottenTomatoes";}
+
+    constructor (tvdbapi=null, tmdbapi=null) {
+        super(RottenTomatoes.name, tvdbapi, tmdbapi);
+        this.idRegex = new RegExp("\/(?<type>m|tv)\/(?<slug>.*)");
+	}
+
+    _typeSlugFromUrl(url) {
+        const result = this.idRegex.exec(url);
+        if (result && result.groups) {
+            const found = result.groups;
+            found.type = (found.type == "m") ? ItemTypes.Movie : ((found.type == "tv") ? ItemTypes.Serie: null);
+            return found;
+        }
+        return {"type": null, "slug": null};
+    }
+
+    // https://www.rottentomatoes.com/m/xxx
+    urlMatch(url) { return url.match(/.*rottentomatoes.com\/(tv|m)\//)?true:false; }
+
+    async itemFromUrl(url) {
+      const type_slug = this._typeSlugFromUrl(url);
+      const item = this.itemFromTmdbSlug(type_slug.type, type_slug.slug);
+      return (item) ? item : new Item();
+    }
+
+    // async ImdbidFromTitle(title,ismovie) {
+	// 	if (ismovie){
+	// 		var url = "http://www.imdb.com/find?s=tt&ttype=ft&ref_=fn_ft&q=" + title;
+	// 	} else {
+	// 		var url = "http://www.imdb.com/find?s=tt&&ttype=tv&ref_=fn_tv&q=" + title;
+	// 	}
+	// 	let result = await $.ajax({url: url, datatype: "xml"});
+	// 	var regex = new RegExp("\/tt\\d{1,8}");
+	// 	let imdbid = await regex.exec($(result).find(".result_text").find("a").attr("href"));
+
+	// 	return (imdbid) ? imdbid[0].slice(1) : "";
+
+	// }
+        // try {
+        //     let imdbid = pulsarr.extractIMDBID(url);
+        //     let tvdbid = await pulsarr.TvdbidFromImdbid(imdbid);
+        //     console.log("Extracted imdb id " + imdbid + " tvdbid " + tvdbid);
+
+        //     Promise.all([radarr.lookupMovie(imdbid, tvdbid), sonarr.lookupSeries(tvdbid)]).then(function(error) {
+        //         if (pulsarrConfig.radarr.isEnabled && pulsarrConfig.sonarr.isEnabled) {
+        //             pulsarr.info(error);
+        //         } else if (pulsarrConfig.radarr.isEnabled && !pulsarrConfig.sonarr.isEnabled) {
+        //             pulsarr.init(blackhole);
+        //             $('#optLgConfig').removeClass("hidden");
+        //             pulsarr.info("Unable to find movie. If this is a series, please configure a Sonarr server.");
+        //         } else if (!pulsarrConfig.radarr.isEnabled && pulsarrConfig.sonarr.isEnabled) {
+        //             pulsarr.init(blackhole);
+        //             $('#optLgConfig').removeClass("hidden");
+        //             pulsarr.info("Unable to find series. If this is a movie, please configure a Radarr server.");
+        //         } else {
+        //         }
+        //     }).catch(function(response) {
+        //         pulsarr.init(response);
+        //     });
+        // } catch (err) {
+        //     pulsarr.info(err);
+        // }
+
+    //     return true;
+    // }
+}
+
 // Build the list of available providers
 const tvdbapi = new TvdbApi();
 const tmdbapi = new TmdbApi();
@@ -366,6 +440,7 @@ const ProviderList = {};
 ProviderList[Imdb.name] = new Imdb(tvdbapi, tmdbapi);
 ProviderList[Tvdb.name] = new Tvdb(tvdbapi, tmdbapi);
 ProviderList[TheMovieDb.name] = new TheMovieDb(tvdbapi, tmdbapi);
+ProviderList[RottenTomatoes.name] = new RottenTomatoes();
 // ProviderList[TraktTv.name] = new TraktTv();
 
 // Find a provider matching this url

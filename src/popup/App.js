@@ -32,9 +32,9 @@ const darkTheme = createTheme({
 });
 
 const borderStyles = {
-  borderRadius: '16px', 
-  boxShadow: 2, 
-  border: 1, 
+  borderRadius: '16px',
+  boxShadow: 2,
+  border: 1,
   borderColor: 'grey.500',
   bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : '#fff'),
   m: 2,
@@ -101,12 +101,12 @@ function ItemAdd({item, seterror}) {
       {loading?(
         <Box sx={{ display: 'flex', justifyContent: 'center', p:2}}>
           <CircularProgress />
-        </Box>        
+        </Box>
       ):(
         <form onSubmit={handleSubmit}>
         <FormGroup>
           {(item.itemtype == ItemTypes.Movie)&&(
-            <OptionMenu 
+            <OptionMenu
                 name = "sel_auxinfo"
                 tip = "Minimum availability before downloading"
                 label = "Minimum availability"
@@ -116,7 +116,7 @@ function ItemAdd({item, seterror}) {
           )}
 
           {(item.itemtype == ItemTypes.Serie)&&(
-            <OptionMenu 
+            <OptionMenu
               name = "sel_auxinfo"
               tip = "Serie type"
               label = "Serie type"
@@ -125,7 +125,7 @@ function ItemAdd({item, seterror}) {
             />
           )}
 
-          <OptionMenu 
+          <OptionMenu
             name = "sel_quality"
             tip = {`Required quality profile for this ${item.itemtype}`}
             label = "Quality profile"
@@ -133,7 +133,7 @@ function ItemAdd({item, seterror}) {
             defaultval = {item.server.profileid}
           />
 
-          <OptionMenu 
+          <OptionMenu
             name = "sel_folder"
             tip = {`Folder where to import the ${item.itemtype}`}
             label = "Import folder"
@@ -153,7 +153,7 @@ function ItemAdd({item, seterror}) {
         </Box>
         </form>
       )}
-    </Box>    
+    </Box>
   )
 }
 
@@ -182,7 +182,7 @@ function ItemContent({item}) {
         <Typography variant="subtitle1" color="text.secondary" component="div" sx={{ display: 'flex'}}>
         {`(${item.properties.year})`}
         </Typography>
-        <Typography variant="caption" color="text.secondary" component="div" 
+        <Typography variant="caption" color="text.secondary" component="div"
           className={shortOverview?'truncText':'fullText'}
           onClick={() => {setShortOverview(!shortOverview)}}
           sx={{ display: 'flex' }}
@@ -194,43 +194,65 @@ function ItemContent({item}) {
   )
 }
 
-function ItemHeader({item}) {
-  return (
-    <Typography component="div" variant="h5" sx={{ display: 'flex', flexDirection: 'row', p: 1, justifyContent: 'space-between' }}>
-      {item ? (<>
-        <Tooltip title={`Open ${item.server.name}`}>
-          <Box sx={{ display: 'flex', ml:1}}>
-            <a id="card-header" href={item.server.getUrl()}><img src={item.server.getLogo(32)}/></a>
-          </Box>
-          </Tooltip>
-        <Box sx={{ display: 'flex', pl: 1}}>
-          {`Add to ${item.server.name}`}
-        </Box>
-      </>):(
-        <Box sx={{ display: 'flex', pl: 1}}>
-        Loading
-        </Box>
-      )}
-      <Tooltip title="Open magnetarr settings">
-        <IconButton aria-label="settings" onClick={() => {browser.runtime.openOptionsPage()}}>
-          <SettingsIcon />
-        </IconButton>
-      </Tooltip>
-    </Typography>
+function ItemHeader({ item, items, change }) {
+    const handleChange = (event) => {
+      change(items[event.target.value]);
+    };
+    return (
+      <>
+          <Typography component="div" variant="h5" sx={{ display: 'flex', flexDirection: 'row', p: 1, justifyContent: 'space-between' }}>
+            {item ? (<>
+                <Tooltip title={`Open ${item.server.name}`}>
+                <Box sx={{ display: 'flex', ml:1}}>
+                    <a id="card-header" href={item.server.getUrl()}><img src={item.server.getLogo(32)}/></a>
+                </Box>
+                </Tooltip>
+                <Box sx={{ display: 'flex', pl: 1}}>
+                {`Add to ${item.server.name}`}
+                </Box>
+            </>):(
+                <Box sx={{ display: 'flex', pl: 1}}>
+                Loading
+                </Box>
+            )}
+            <Tooltip title="Open magnetarr settings">
+                <IconButton aria-label="settings" onClick={() => {browser.runtime.openOptionsPage()}}>
+                <SettingsIcon />
+                </IconButton>
+            </Tooltip>
+            </Typography>
+            {items != null && items.length > 1 ? (
+            <Typography component="div" variant="h5" sx={{ display: 'flex', flexDirection: 'row', p: 1, justifyContent: 'space-between' }}>
+                <FormControl sx={{ m: 1}} size="small">
+                <InputLabel id="id_matchlabel">Other title matches</InputLabel>
+                <Select
+                    labelId={`id_matchlabel`}
+                    id={`id_match`}
+                    defaultValue={0}
+                    onChange={handleChange}
+                >
+                    {items.map((val, idx) => (
+                    <MenuItem value={idx}>{val.properties.title} ({val.properties.year})</MenuItem>
+                    ))}
+                </Select>
+                </FormControl>
+            </Typography>) : (<></>)}
+      </>
   )
 }
 
 export default function App() {
   const [errorText, setErrorText] = React.useState("")
+  const [items, setItems] = React.useState(null)
   const [item, setItem] = React.useState(null)
 
-  // Retrieve info of item displayed in the current tab url
+  // Retrieve info of item displayed in the current tab url as a list of items
   async function getItemInfo() {
     const targetUrl = await getCurrentTabUrl();
     const provider = getProviderFromUrl(targetUrl);
     if (provider) {
       // Find item id and type from the url to get the server that can handle this item
-      const item = await  provider.itemFromUrl(targetUrl); 
+      const item = await  provider.itemFromUrl(targetUrl);
       const server = getServerForType(item.itemtype);
       if (server) {
         item.provider = provider;
@@ -242,8 +264,7 @@ export default function App() {
         if (! server.enabled) { throw Error("Server not enabled, make sure to configure it."); }
 
         // Querying the item id to get info
-        await server.getItemInfo(item);
-        return item;
+        return await server.getItemInfo(item);
       }
       else { console.log(item); throw Error("No server found for item type " + item.itemtype); }
     }
@@ -252,15 +273,25 @@ export default function App() {
 
   React.useEffect(() => {
     if (!item){
-      getItemInfo().then((item) => {
-        setItem(item);
-        console.log("Item info: "); console.log(item);
+        getItemInfo().then((items) => {
+            if (items.length == 0) {
+                console.error("No match found");
+                setStatus("No match found", 5000);
+                return;
+            }
+            else {
+                setItem(items[0]);
+                if (items.length > 1) {
+                    console.log(`${items.length} matches found`);
+                    setItems(items);
+                }
+            }
       }).catch((error) => {
         console.error("Couldn't get item info: " + error);
         setStatus("Couldn't extract item information: " + error, true, 5000);
       });
     }
-  }, [item])
+  }, [item, items])
 
   function setStatus(text, error=false, timeout=1500) {
     setErrorText({text: text, class: error?"errorText":"successText"});
@@ -274,7 +305,7 @@ export default function App() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
         <Card className="App" sx={{ display: 'flex', flexDirection: 'column' }}>
-          <ItemHeader item={item} />
+          <ItemHeader item={item} items={items} change={setItem} />
 
           {/* Status text */}
           {errorText && (
@@ -283,7 +314,7 @@ export default function App() {
                   {errorText.text}
                 </Typography>
           </Box>)}
-            
+
           {!item?(
             <Box sx={{ display: 'flex', justifyContent: 'center', width: 200, height: 200, pt:8}}>
               <CircularProgress />
@@ -309,4 +340,3 @@ export default function App() {
     </ThemeProvider>
   );
 }
-

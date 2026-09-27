@@ -1,9 +1,15 @@
 # Magnetarr
 
-Browser extension for adding movies to [Radarr](https://radarr.video) or Series' to [Sonarr](https://sonarr.tv) while browsing [imdb.com](https://www.imdb.com), [thetvdb.com](https://www.thetvdb.com/), [themoviedb.org](https://www.themoviedb.org/), inspired by [Pulsarr](https://github.com/roboticsound/Pulsarr), completely rewritten in react.
+Browser extension for adding movies to [Radarr](https://radarr.video) or Series' to [Sonarr](https://sonarr.tv). Inspired by [Pulsarr](https://github.com/roboticsound/Pulsarr), completely rewritten in react.
+Supports:
+- [imdb.com](https://www.imdb.com)
+- [thetvdb.com](https://www.thetvdb.com/)
+- [themoviedb.org](https://www.themoviedb.org/)
+- [rottentomatoes.com](https://www.rottentomatoes.com)
+Works on:
 - [Chrome](https://chromewebstore.google.com/detail/magnetarr/makjonablkcafdpkhfllblcmccgaahil)
 - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/magnetarr/)
-- iOS/OSX Xcode project provided for anyone to build and run locally (follow instructions [here](https://developer.apple.com/documentation/safariservices/safari_web_extensions/running_your_safari_web_extension)), but the extension is not distributed on the app store (i'm not paying the enrollment just for this:P)
+- iOS/OSX Xcode project provided for anyone to build and run locally (follow instructions [here](https://developer.apple.com/documentation/safariservices/safari_web_extensions/running_your_safari_web_extension)), but the extension is not distributed on the app store (i'm not paying the enrollment just for this 😜)
   - To build the xcode project you must first [build the extension](<README#Build the extension>)
 ![](release/img/svg/screen2.jpg)
 
