@@ -372,6 +372,8 @@ export class RottenTomatoes extends Provider {
         this.idRegex = new RegExp("\/(?<type>m|tv)\/(?<slug>.*)");
 	}
 
+	// https://www.rottentomatoes.com/tv/ted_lasso
+	// --> type=tv slyg=ted_lasso
     _typeSlugFromUrl(url) {
         const result = this.idRegex.exec(url);
         if (result && result.groups) {

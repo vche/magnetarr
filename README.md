@@ -11,6 +11,7 @@ Works on:
 - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/magnetarr/)
 - iOS/OSX Xcode project provided for anyone to build and run locally (follow instructions [here](https://developer.apple.com/documentation/safariservices/safari_web_extensions/running_your_safari_web_extension)), but the extension is not distributed on the app store (i'm not paying the enrollment just for this 😜)
   - To build the xcode project you must first [build the extension](<README#Build the extension>)
+  - You can generate a self signed app and install it in your browsers (see [here](https://stackoverflow.com/a/62748969/871561))
 ![](release/img/svg/screen2.jpg)
 
 
